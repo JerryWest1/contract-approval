@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Processing Approval...</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="refresh" content="5; url=https://zapier.com/shared/interface/thank-you-contract-sent" />
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; text-align: center; padding-top: 80px; }
+    .box { background: #fff; padding: 40px; margin: auto; width: 90%; max-width: 480px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Sending Contract for Signing...</h2>
+    <p>Please wait, this will only take a moment.</p>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const employeeName = params.get("employee_name");
+
+    fetch("https://hooks.zapier.com/hooks/catch/YOUR_WEBHOOK_ID/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "approve",
+        employee_name: employeeName
+      })
+    }).catch(err => console.error("Webhook failed:", err));
+
+    setTimeout(() => {
+      window.location.href = "https://zapier.com/shared/interface/thank-you-contract-sent";
+    }, 5000);
+  </script>
+</body>
+</html>
