@@ -1,0 +1,33 @@
+# Prompt injection: text inside SKILL.md or other markdown/yaml files that
+# tries to override the host agent's instructions or impersonate the system.
+# PCRE2 (ripgrep -P), all case-insensitive via (?i). One regex per line.
+
+# Classic override phrases
+(?i)\bignore\s+(all\s+)?(previous|prior|above)\s+instructions?\b
+(?i)\bdisregard\s+(the\s+)?(system|previous|above)\s+(prompt|instructions?)\b
+(?i)\boverride\s+(the\s+)?(system|previous)\s+(prompt|instructions?)\b
+(?i)\bforget\s+(everything|all\s+(prior|previous))\b
+
+# Role override
+(?i)\byou\s+are\s+now\b
+(?i)\bact\s+as\b.{0,50}?(system|admin|root|developer\s+mode|jailbreak)
+(?i)\bnew\s+(system\s+)?(prompt|instructions?)\s*:
+
+# Fake system markers in body content
+\[\[?\s*(SYSTEM|ASSISTANT|USER)\s*\]?\]
+<\|\s*(system|im_start|im_end)\s*\|>
+^###\s*(System|Instruction)\s*Override\s*$
+
+# Hidden zero-width / bidi unicode (often used to smuggle instructions)
+[\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2060}-\x{2069}]
+
+# HTML comments containing imperatives
+<!--[^>]{0,500}?\b(run|execute|eval|delete|chmod|curl|wget|sudo|install|fetch)\b[^>]{0,500}?-->
+
+# Direct commands at the agent
+(?i)\b(claude|the\s+assistant|the\s+model)\s+(must|should|will|shall)\s+(immediately|silently|without\s+(asking|telling))
+(?i)\bdo\s+not\s+(tell|inform|warn|ask)\s+the\s+user\b
+
+# Tool-call injection
+(?i)\bcall\s+the\s+(bash|edit|write|read)\s+tool\s+with\b
+(?i)\binvoke\s+(tool|function)\s+(['"]?bash|['"]?write)

@@ -1,0 +1,32 @@
+# Obfuscation: code that hides its real intent. Match the decode-then-execute
+# shape and long opaque blobs that usually carry packed payloads.
+# PCRE2 (ripgrep -P). One regex per line.
+
+# base64 decode then pipe to a shell
+\bbase64\s+(--?d(ecode)?|-D)\b[^|]{0,100}?\|\s*(sh|bash|zsh)
+
+# JS classic: eval(atob(...))
+\beval\s*\(\s*atob\s*\(
+\bFunction\s*\(\s*atob\s*\(
+
+# Python: exec/eval on decoded bytes
+\b(exec|eval|compile)\s*\(\s*(base64|codecs|zlib|marshal|pickle)\.[a-z_]+\s*\(
+
+# Python exec on decoded string
+\b(exec|eval)\s*\(\s*[^)]{0,200}?\.decode\s*\(\s*['"]base64['"]
+\b(exec|eval)\s*\(\s*[a-zA-Z_][a-zA-Z0-9_]*\.b64decode\s*\(
+
+# Long hex-escape strings (almost always packed shellcode)
+(\\x[0-9a-fA-F]{2}){12,}
+
+# Long base64 literal (>=200 base64 chars on one line)
+['"][A-Za-z0-9+/]{200,}={0,2}['"]
+
+# Long hex blob
+['"](?:[0-9a-fA-F]{2}){200,}['"]
+
+# Reverse-string trick: 'hsab/nib/'[::-1]
+\[\s*::\s*-\s*1\s*\]
+
+# Unicode escape execution
+\beval\s*\(\s*"\\u00

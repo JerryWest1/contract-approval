@@ -1,0 +1,21 @@
+# Data exfiltration: shipping data to an attacker-controlled destination,
+# or reading well-known secret/credential locations.
+# Patterns are PCRE2 (ripgrep -P). One regex per line. Comments start with #.
+
+# Outbound to known anonymized/ephemeral drop sites
+\b(curl|wget|nc|httpie|http)\b.{0,200}?(\.onion|paste\.ee|pastebin\.com|hastebin\.com|transfer\.sh|file\.io|ngrok\.io|ngrok-free\.app|requestbin\.|webhook\.site|pipedream\.|discord(app)?\.com/api/webhooks|t\.me/|api\.telegram\.org)
+
+# Outbound POST/PUT of file contents
+\b(curl|wget)\b.{0,200}?(--data(-binary)?|-d\s|-T\s|--upload-file)
+
+# Reads of credential/secret locations
+~/\.ssh(/|\b)|~/\.aws(/|\b)|~/\.gnupg(/|\b)|~/\.config/gh(/|\b)|~/\.netrc\b|~/\.docker/config\.json|~/\.kube/config
+
+# Common secret filenames (case-insensitive via (?i))
+(?i)\b(id_rsa|id_ed25519|id_ecdsa|id_dsa|authorized_keys|known_hosts|\.env|\.env\.[a-z]+)\b
+
+# Secret-bearing env vars
+\b(GITHUB_TOKEN|GH_TOKEN|GITLAB_TOKEN|ANTHROPIC_API_KEY|OPENAI_API_KEY|AWS_SECRET_ACCESS_KEY|AWS_SESSION_TOKEN|GCP_SERVICE_ACCOUNT|AZURE_CLIENT_SECRET|NPM_TOKEN|PYPI_TOKEN|HF_TOKEN|SLACK_TOKEN|STRIPE_SECRET_KEY)\b
+
+# Reading then sending: cat <secret> | curl/nc
+\bcat\s+[^|;]{0,200}?(\.ssh|\.aws|\.env|id_rsa|id_ed25519)[^|;]{0,200}?\|\s*(curl|wget|nc|http)
