@@ -47,9 +47,18 @@ well-categorized extraction.
    - Capital improvements / construction / renovation (CapEx)
    - Carrying & soft costs: property tax, insurance, utilities, HOA, legal,
      architecture/engineering, permits, financing/loan fees, points
+   - **Operating expenses run through the income statement / P&L** (attorney &
+     professional fees, insurance expense, real-estate tax, postage, etc.).
+     These are real dollars spent and usually are NOT in the capitalized
+     balance-sheet totals — confirm against the GL and add them so they aren't
+     missed. Do not double-count a cost that already sits in the capitalized
+     asset accounts.
    - Operating cash the owner injected to cover shortfalls (negative NOI funded
      out of pocket)
    - Any other owner cash contribution
+
+   Do NOT add accounts payable or an operating-cash overdraft as basis — those
+   describe how the deal was *funded/timed*, not costs incurred.
 
 3. **Do NOT** include third-party financed dollars as owner basis *unless* the
    owner is personally carrying that cost — but DO record the loan terms,

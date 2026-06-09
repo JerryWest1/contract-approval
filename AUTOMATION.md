@@ -20,13 +20,20 @@ for property folders (e.g. `52 Hawkin Road, Medford`). For each property folder:
 
 3. **Run the skill.** Act as the `real-estate-cfo` agent and follow
    `.claude/skills/property-cfo-analysis/SKILL.md`:
-   - Extract every owner cost and each dated loan/advance into
-     `deals/<Property Name>/deal.json`.
-   - Capitalized costs are basis entries (`accrues_interest: false`).
+   - **Count ALL money spent on the property as basis** — both the *capitalized*
+     costs on the balance sheet (Building, Improvements, Construction, Carrying)
+     AND the *operating expenses* run through the income statement / P&L (e.g.
+     attorney & professional fees, insurance expense, real-estate tax, postage).
+     These P&L expenses are real dollars spent and are NOT in the capitalized
+     balance-sheet totals, so they must be added — do not omit them.
+   - Capitalized costs and P&L operating expenses are basis entries
+     (`accrues_interest: false`).
    - Loan / hard-money draws use `basis: false` and accrue **12% simple,
      actual/365** interest from each draw date.
    - **Net any income already received** (e.g. forfeited U&O / rent) as a
      negative basis entry.
+   - **Do NOT** add accounts payable or operating-cash overdraft as basis — those
+     are *funding/timing* items (how the deal was financed), not costs incurred.
    - `selling_cost_pct: 0.06`; include 3–4 `target_sale_prices` bracketing the
      breakeven.
    - Run `scripts/analyze.py` then `scripts/generate_pdf.py`.
