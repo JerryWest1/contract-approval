@@ -5,10 +5,14 @@ This file is the "job description" for the automated cloud run (a Claude Code
 skill and the `real-estate-cfo` agent in this repo — the routine is just the
 *trigger*; the recipe lives in `.claude/`.
 
-## The job (runs on a schedule, e.g. every 15 minutes)
+## The job (fired by a webhook when files are dropped in the inbox)
 
-Using the **Google Drive** connector, look in the **LIGHTHOUSE shared drive**
-for property folders (e.g. `52 Hawkin Road, Medford`). For each property folder:
+Using the **Google Drive** connector, look **ONLY** inside the dedicated drop
+zone: the **`CFO Report Inbox`** folder in the **LIGHTHOUSE** shared drive
+(folder ID `18EJXtLspRF4_aiY4SLIU-AdjIVzfpVG9`). The user creates one
+**subfolder per property** inside the inbox and drops that property's financial
+files there. **Do not scan anywhere else in the drive** — only the inbox and its
+property subfolders. For each property subfolder in the inbox:
 
 1. **Check if it needs processing.** It needs processing if it contains a
    balance sheet, an income statement, and a general ledger (PDF/Excel/CSV) and
@@ -39,17 +43,19 @@ for property folders (e.g. `52 Hawkin Road, Medford`). For each property folder:
    - Run `scripts/analyze.py` then `scripts/generate_pdf.py`.
 
 4. **Upload** the generated `<Property> - Board Summary <YYYY-MM-DD>.pdf` back
-   into the **same Drive folder** it came from. **Do NOT use the chat-style Drive
-   connector to upload** — it corrupts binary PDFs. Instead use the binary-safe
-   uploader (a service-account credential must be present as
-   `GOOGLE_SERVICE_ACCOUNT_JSON`):
+   into the **same inbox subfolder** it came from. **Do NOT use the chat-style
+   Drive connector to upload** — it corrupts binary PDFs. Instead use the
+   binary-safe uploader (a service-account credential must be present as
+   `GOOGLE_SERVICE_ACCOUNT_JSON`). Pass the subfolder's **folder ID** to
+   `--folder` (the ID you got while listing the inbox) so the upload can't land
+   in a same-named folder elsewhere in the drive:
 
    ```bash
    pip install -q google-api-python-client google-auth
    python3 .claude/skills/property-cfo-analysis/scripts/upload_to_drive.py \
      --file "deals/<Property Name>/<Property Name> - Board Summary <YYYY-MM-DD>.pdf" \
      --drive "LIGHTHOUSE" \
-     --folder "<the exact Drive folder name this property came from>"
+     --folder "<the inbox subfolder's folder ID>"
    ```
    The connector is fine for **reading/listing** files; only the **upload** must
    go through this script. After upload, open the link it prints and confirm the
