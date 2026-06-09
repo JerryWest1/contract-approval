@@ -1,0 +1,313 @@
+{
+  "property": {
+    "name": "511 Shires Way",
+    "address": "511 Shires Way, Egg Harbor, NJ 08234",
+    "as_of_date": "2026-06-09",
+    "default_interest_rate": 0.12,
+    "day_count": 365,
+    "selling_cost_pct": 0.06
+  },
+  "totals": {
+    "total_cost_basis": 280911.16,
+    "total_accrued_interest": 32478.9,
+    "all_in_position": 313390.06,
+    "breakeven_sale_price": 333393.68,
+    "entry_count": 21
+  },
+  "categories": [
+    {
+      "category": "Acquisition",
+      "basis": 141244.31,
+      "interest": 0.0
+    },
+    {
+      "category": "Construction",
+      "basis": 87871.99,
+      "interest": 0.0
+    },
+    {
+      "category": "Improvements",
+      "basis": 85187.76,
+      "interest": 0.0
+    },
+    {
+      "category": "Operating Expenses",
+      "basis": 11099.24,
+      "interest": 0.0
+    },
+    {
+      "category": "Carrying Costs",
+      "basis": 1607.86,
+      "interest": 0.0
+    },
+    {
+      "category": "Less: Income Received",
+      "basis": -46100.0,
+      "interest": 0.0
+    }
+  ],
+  "entries": [
+    {
+      "date": "2024-11-06",
+      "description": "Purchase price / building basis (JE 13070, wire 11/05/2024)",
+      "category": "Acquisition",
+      "amount": 141244.31,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 580,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-31",
+      "description": "Capitalized closing costs & fees (title, finders fee, recording, taxes, sewer \u2014 reclass JE 16975)",
+      "category": "Improvements",
+      "amount": 9087.76,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 160,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-02-09",
+      "description": "U&O release payment (Aubrey McIntosh, check 805)",
+      "category": "Improvements",
+      "amount": 30000.0,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 120,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-02-09",
+      "description": "U&O charge to occupant (non-cash, capitalized \u2014 JE 16846)",
+      "category": "Improvements",
+      "amount": 46100.0,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 120,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-05-01",
+      "description": "Construction \u2014 labor (A&A Quality Painting, flooring labor)",
+      "category": "Construction",
+      "amount": 37448.12,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 39,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-06-09",
+      "description": "Construction \u2014 repairs (cleanout, roll-offs, flooring, staging, termite)",
+      "category": "Construction",
+      "amount": 11964.92,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 0,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-06-09",
+      "description": "Construction \u2014 materials (HD, Sherwin Williams, kitchen, appliances, marble)",
+      "category": "Construction",
+      "amount": 38458.95,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 0,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-06-09",
+      "description": "Carrying \u2014 insurance (accrued)",
+      "category": "Carrying Costs",
+      "amount": 98.44,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 0,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-05-19",
+      "description": "Carrying \u2014 utilities 2026 (electric, water, gas)",
+      "category": "Carrying Costs",
+      "amount": 1509.42,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 21,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-31",
+      "description": "Recording & filing fees (P&L)",
+      "category": "Operating Expenses",
+      "amount": 70.0,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 160,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-05-12",
+      "description": "Insurance expense (P&L)",
+      "category": "Operating Expenses",
+      "amount": 1876.8,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 28,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-31",
+      "description": "Real estate tax (P&L)",
+      "category": "Operating Expenses",
+      "amount": 8280.55,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 160,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-31",
+      "description": "Postage & delivery (P&L)",
+      "category": "Operating Expenses",
+      "amount": 19.65,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 160,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-05-08",
+      "description": "Repairs & maintenance \u2014 material, Lowes (P&L)",
+      "category": "Operating Expenses",
+      "amount": 482.24,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 32,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-31",
+      "description": "Utilities 2025 (P&L)",
+      "category": "Operating Expenses",
+      "amount": 370.0,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 160,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2026-02-09",
+      "description": "Less: U&O / rent income recognized (JE 16846)",
+      "category": "Less: Income Received",
+      "amount": -46100.0,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 120,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2024-11-05",
+      "description": "Oak Tree Equities \u2014 loan for purchase (conf 1014672943)",
+      "category": "Loan: Oak Tree Equities",
+      "amount": 150000.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 581,
+      "accrued_interest": 28652.05
+    },
+    {
+      "date": "2025-03-06",
+      "description": "Oak Tree Equities \u2014 advance (conf 1053526219)",
+      "category": "Loan: Oak Tree Equities",
+      "amount": 10000.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 460,
+      "accrued_interest": 1512.33
+    },
+    {
+      "date": "2026-02-09",
+      "description": "Oak Tree Equities \u2014 loan (conf 1167384469)",
+      "category": "Loan: Oak Tree Equities",
+      "amount": 30000.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 120,
+      "accrued_interest": 1183.56
+    },
+    {
+      "date": "2026-04-14",
+      "description": "Oak Tree Equities \u2014 loan (conf 1189572718)",
+      "category": "Loan: Oak Tree Equities",
+      "amount": 50000.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 56,
+      "accrued_interest": 920.55
+    },
+    {
+      "date": "2026-05-08",
+      "description": "Oak Tree Equities \u2014 advance (conf 1198089856)",
+      "category": "Loan: Oak Tree Equities",
+      "amount": 20000.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 32,
+      "accrued_interest": 210.41
+    }
+  ],
+  "scenarios": [
+    {
+      "sale_price": 320000.0,
+      "selling_costs": 19200.0,
+      "net_proceeds": 300800.0,
+      "profit": -12590.06,
+      "roi_on_basis": -0.0448
+    },
+    {
+      "sale_price": 340000.0,
+      "selling_costs": 20400.0,
+      "net_proceeds": 319600.0,
+      "profit": 6209.94,
+      "roi_on_basis": 0.0221
+    },
+    {
+      "sale_price": 360000.0,
+      "selling_costs": 21600.0,
+      "net_proceeds": 338400.0,
+      "profit": 25009.94,
+      "roi_on_basis": 0.089
+    },
+    {
+      "sale_price": 380000.0,
+      "selling_costs": 22800.0,
+      "net_proceeds": 357200.0,
+      "profit": 43809.94,
+      "roi_on_basis": 0.156
+    }
+  ],
+  "notes": "511 Shires Way, Egg Harbor NJ \u2014 fix-and-flip. Net cost basis = capitalized cost on the accrual balance sheet $315,911.92 (Building Property $141,244.31 + Improvements $85,187.76 + CIP $87,871.99 + carrying insurance $98.44 + utilities $1,509.42) PLUS $11,099.24 operating expenses run through the cash-basis P&L (recording $70, insurance $1,876.80, RE tax $8,280.55, postage $19.65, R&M material $482.24, utilities $370) LESS $46,100 U&O income recognized (JE 16846 charge to occupant, booked as rent) = $280,911.16. The $46,100 U&O charge was capitalized into Improvements as a non-cash entry and is exactly offset by the income netting, so net basis equals cash funded plus accrued payables. Reconciliation: basis $280,911.16 = Oak Tree loans $260,000.00 + operating-cash overdraft $19,232.34 + accounts payable $1,630.56 + credit card $48.26 (ties to the penny). AP, overdraft, and credit-card balances are NOT added as basis (funding/timing items per methodology). Interest accrues only on the $260,000 Oak Tree Equities loan draws at 12% simple, actual/365, from each GL draw date. Basis entries do not accrue interest; their dates are the GL transaction/reclass dates (cosmetic only). Selling costs assumed at 6%. Sources: balance sheet (accrual, as of 06/09/2026), income statement (cash, all time), general ledger (cash, all time), all created 06/09/2026."
+}
