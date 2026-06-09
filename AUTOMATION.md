@@ -9,17 +9,19 @@ skill and the `real-estate-cfo` agent in this repo — the routine is just the
 
 Using the **Google Drive** connector, look **ONLY** inside the dedicated drop
 zone: the **`CFO Report Inbox`** folder in the **LIGHTHOUSE** shared drive
-(folder ID `18EJXtLspRF4_aiY4SLIU-AdjIVzfpVG9`). The user creates one
-**subfolder per property** inside the inbox and drops that property's financial
-files there. **Do not scan anywhere else in the drive** — only the inbox and its
-property subfolders. For each property subfolder in the inbox:
+(folder ID `18EJXtLspRF4_aiY4SLIU-AdjIVzfpVG9`). The user drops a property's
+financial files **directly into this folder**. **Do not scan anywhere else in
+the drive.**
 
-1. **Check if it needs processing.** It needs processing if it contains a
-   balance sheet, an income statement, and a general ledger (PDF/Excel/CSV) and
-   does **not** already contain a file named like `* Board Summary *.pdf`.
-   Skip folders that already have a board summary (idempotent — never redo work).
+1. **Group the inbox files by property.** Each financial document names its
+   property in the header (e.g. `Properties: 52 Hawkin Road Medford NJ 08055`).
+   Group the loose files in the inbox by that property. A property is **ready**
+   when its group has a balance sheet, an income statement, and a general
+   ledger. **Skip** any property for which a file named
+   `<Property> - Board Summary *.pdf` already exists in the inbox (idempotent —
+   never redo work). For each ready, not-yet-done property:
 
-2. **Download** the source files from that Drive folder into
+2. **Download** that property's source files into
    `deals/<Property Name>/inputs/`.
 
 3. **Run the skill.** Act as the `real-estate-cfo` agent and follow
@@ -42,31 +44,30 @@ property subfolders. For each property subfolder in the inbox:
      breakeven.
    - Run `scripts/analyze.py` then `scripts/generate_pdf.py`.
 
-4. **Upload** the generated `<Property> - Board Summary <YYYY-MM-DD>.pdf` back
-   into the **same inbox subfolder** it came from. **Do NOT use the chat-style
-   Drive connector to upload** — it corrupts binary PDFs. Instead use the
-   binary-safe uploader (a service-account credential must be present as
-   `GOOGLE_SERVICE_ACCOUNT_JSON`). Pass the subfolder's **folder ID** to
-   `--folder` (the ID you got while listing the inbox) so the upload can't land
-   in a same-named folder elsewhere in the drive:
+4. **Upload** the generated `<Property> - Board Summary <YYYY-MM-DD>.pdf` into the
+   **`CFO Report Inbox`** folder (next to the source files, so the user sees it
+   appear where they dropped them). **Do NOT use the chat-style Drive connector
+   to upload** — it corrupts binary PDFs. Use the binary-safe uploader (the
+   service-account credential is in `GOOGLE_SERVICE_ACCOUNT_JSON`), passing the
+   inbox **folder ID**:
 
    ```bash
    pip install -q google-api-python-client google-auth
    python3 .claude/skills/property-cfo-analysis/scripts/upload_to_drive.py \
      --file "deals/<Property Name>/<Property Name> - Board Summary <YYYY-MM-DD>.pdf" \
      --drive "LIGHTHOUSE" \
-     --folder "<the inbox subfolder's folder ID>"
+     --folder "18EJXtLspRF4_aiY4SLIU-AdjIVzfpVG9"
    ```
-   The connector is fine for **reading/listing** files; only the **upload** must
-   go through this script. After upload, open the link it prints and confirm the
-   PDF renders fully (not just the header).
+   The connector is fine for **reading/listing**; only the **upload** must go
+   through this script. After upload, open the link it prints and confirm the PDF
+   renders fully (not just the header).
 
 5. **Never fabricate figures.** Record assumptions in `deal.json`'s `notes`.
 
 ## Notes & guardrails
 - One property at a time; if several are ready, process each.
-- If a file can't be read or a key figure is missing, write a short
-  `NEEDS_REVIEW.txt` into that property's Drive folder explaining what's missing,
-  instead of producing a misleading PDF.
+- If a file can't be read or a key figure is missing, upload a short
+  `<Property> - NEEDS_REVIEW.txt` into the `CFO Report Inbox` explaining what's
+  missing, instead of producing a misleading PDF.
 - The math and PDF are deterministic (the Python scripts). The only "judgment"
   step is the extraction — keep it faithful to the source documents.
