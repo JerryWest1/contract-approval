@@ -1,0 +1,20 @@
+{
+  "property": {
+    "name": "REPLACE WITH PROPERTY NAME",
+    "address": "Street, City, State",
+    "as_of_date": "2026-06-09",
+    "default_interest_rate": 0.12,
+    "day_count": 365,
+    "selling_cost_pct": 0.06,
+    "target_sale_prices": []
+  },
+  "entries": [
+    {
+      "date": "2024-01-15",
+      "description": "Example: purchase price",
+      "category": "Acquisition",
+      "amount": 0
+    }
+  ],
+  "notes": "Drop the balance sheet, income statement, and general ledger into the inputs/ folder, then ask Claude to run the property-cfo-analysis skill. It will fill this file in from your documents."
+}

@@ -1,0 +1,5 @@
+# Rendered previews
+**/preview*.png
+# Python
+__pycache__/
+*.pyc

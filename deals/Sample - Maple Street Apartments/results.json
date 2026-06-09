@@ -1,0 +1,170 @@
+{
+  "property": {
+    "name": "Maple Street Apartments",
+    "address": "1420 Maple Street, Austin, TX 78704",
+    "as_of_date": "2026-06-09",
+    "default_interest_rate": 0.12,
+    "day_count": 365,
+    "selling_cost_pct": 0.06
+  },
+  "totals": {
+    "total_cost_basis": 1957600.0,
+    "total_accrued_interest": 541633.04,
+    "all_in_position": 2499233.04,
+    "breakeven_sale_price": 2658758.55,
+    "entry_count": 10
+  },
+  "categories": [
+    {
+      "category": "Acquisition",
+      "basis": 1542000.0,
+      "interest": 444096.0
+    },
+    {
+      "category": "Capital Improvements",
+      "basis": 281000.0,
+      "interest": 73456.44
+    },
+    {
+      "category": "Carrying Costs",
+      "basis": 72100.0,
+      "interest": 13086.8
+    },
+    {
+      "category": "Soft Costs",
+      "basis": 40500.0,
+      "interest": 7420.76
+    },
+    {
+      "category": "Operating",
+      "basis": 22000.0,
+      "interest": 3573.04
+    }
+  ],
+  "entries": [
+    {
+      "date": "2024-01-15",
+      "description": "Purchase price",
+      "category": "Acquisition",
+      "amount": 1500000.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 876,
+      "accrued_interest": 432000.0
+    },
+    {
+      "date": "2024-01-15",
+      "description": "Closing & title costs",
+      "category": "Acquisition",
+      "amount": 42000.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 876,
+      "accrued_interest": 12096.0
+    },
+    {
+      "date": "2024-03-01",
+      "description": "Roof replacement",
+      "category": "Capital Improvements",
+      "amount": 85000.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 830,
+      "accrued_interest": 23194.52
+    },
+    {
+      "date": "2024-04-20",
+      "description": "Unit renovations (8 units)",
+      "category": "Capital Improvements",
+      "amount": 196000.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 780,
+      "accrued_interest": 50261.92
+    },
+    {
+      "date": "2024-06-30",
+      "description": "Property tax 2024",
+      "category": "Carrying Costs",
+      "amount": 28500.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 709,
+      "accrued_interest": 6643.23
+    },
+    {
+      "date": "2024-08-10",
+      "description": "Insurance premium",
+      "category": "Carrying Costs",
+      "amount": 14200.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 668,
+      "accrued_interest": 3118.55
+    },
+    {
+      "date": "2024-09-05",
+      "description": "Architect & permits",
+      "category": "Soft Costs",
+      "amount": 31000.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 642,
+      "accrued_interest": 6543.12
+    },
+    {
+      "date": "2025-01-31",
+      "description": "Operating shortfall funded",
+      "category": "Operating",
+      "amount": 22000.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 494,
+      "accrued_interest": 3573.04
+    },
+    {
+      "date": "2025-06-30",
+      "description": "Property tax 2025",
+      "category": "Carrying Costs",
+      "amount": 29400.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 344,
+      "accrued_interest": 3325.02
+    },
+    {
+      "date": "2025-09-01",
+      "description": "Legal \u2014 partnership matters",
+      "category": "Soft Costs",
+      "amount": 9500.0,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 281,
+      "accrued_interest": 877.64
+    }
+  ],
+  "scenarios": [
+    {
+      "sale_price": 2400000.0,
+      "selling_costs": 144000.0,
+      "net_proceeds": 2256000.0,
+      "profit": -243233.04,
+      "roi_on_basis": -0.1243
+    },
+    {
+      "sale_price": 2650000.0,
+      "selling_costs": 159000.0,
+      "net_proceeds": 2491000.0,
+      "profit": -8233.04,
+      "roi_on_basis": -0.0042
+    },
+    {
+      "sale_price": 2900000.0,
+      "selling_costs": 174000.0,
+      "net_proceeds": 2726000.0,
+      "profit": 226766.96,
+      "roi_on_basis": 0.1158
+    }
+  ],
+  "notes": "Illustrative sample data for demonstration. 12% default preferred return; actual/365 simple interest accrued per entry from date funded."
+}

@@ -1,0 +1,24 @@
+{
+  "property": {
+    "name": "Maple Street Apartments",
+    "address": "1420 Maple Street, Austin, TX 78704",
+    "as_of_date": "2026-06-09",
+    "default_interest_rate": 0.12,
+    "day_count": 365,
+    "selling_cost_pct": 0.06,
+    "target_sale_prices": [2400000, 2650000, 2900000]
+  },
+  "entries": [
+    { "date": "2024-01-15", "description": "Purchase price",                 "category": "Acquisition",          "amount": 1500000 },
+    { "date": "2024-01-15", "description": "Closing & title costs",          "category": "Acquisition",          "amount": 42000 },
+    { "date": "2024-03-01", "description": "Roof replacement",               "category": "Capital Improvements", "amount": 85000 },
+    { "date": "2024-04-20", "description": "Unit renovations (8 units)",      "category": "Capital Improvements", "amount": 196000 },
+    { "date": "2024-06-30", "description": "Property tax 2024",              "category": "Carrying Costs",       "amount": 28500 },
+    { "date": "2024-08-10", "description": "Insurance premium",              "category": "Carrying Costs",       "amount": 14200 },
+    { "date": "2024-09-05", "description": "Architect & permits",            "category": "Soft Costs",           "amount": 31000 },
+    { "date": "2025-01-31", "description": "Operating shortfall funded",     "category": "Operating",            "amount": 22000 },
+    { "date": "2025-06-30", "description": "Property tax 2025",              "category": "Carrying Costs",       "amount": 29400 },
+    { "date": "2025-09-01", "description": "Legal — partnership matters",     "category": "Soft Costs",           "amount": 9500 }
+  ],
+  "notes": "Illustrative sample data for demonstration. 12% default preferred return; actual/365 simple interest accrued per entry from date funded."
+}
