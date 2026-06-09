@@ -39,7 +39,12 @@ FOLDER_MIME = "application/vnd.google-apps.folder"
 def get_service():
     raw = os.environ.get("GOOGLE_SERVICE_ACCOUNT_JSON")
     if raw:
-        info = json.loads(raw)
+        raw = raw.strip()
+        try:
+            info = json.loads(raw)            # plain (single-line) JSON
+        except json.JSONDecodeError:
+            import base64                      # or a base64-encoded key
+            info = json.loads(base64.b64decode(raw))
         creds = service_account.Credentials.from_service_account_info(info, scopes=SCOPES)
     else:
         path = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
