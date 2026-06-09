@@ -1,0 +1,287 @@
+{
+  "property": {
+    "name": "52 Hawkin Road, Medford",
+    "address": "52 Hawkin Road, Medford, NJ 08055",
+    "as_of_date": "2026-06-09",
+    "default_interest_rate": 0.12,
+    "day_count": 365,
+    "selling_cost_pct": 0.06,
+    "target_sale_prices": [300000, 320000, 340000, 370000]
+  },
+  "entries": [
+    {
+      "date": "2024-10-10",
+      "description": "Net purchase price: $225,000 contract price, less $13,965.72 septic credit and $247.96 tax proration, plus $5,000 Pine Valley One finder fee — per HUD/JE 12829",
+      "category": "Acquisition",
+      "amount": 215786.32,
+      "accrues_interest": false
+    },
+    {
+      "date": "2024-10-10",
+      "description": "Acquisition soft costs capitalized (JE 16976): title insurance $1,961.00 + net finder fees $5,000.00 + Q4-2024 RE tax capitalized to improvements $2,007.46 + insurance reclassified $176.40",
+      "category": "Acquisition",
+      "amount": 9144.86,
+      "accrues_interest": false
+    },
+    {
+      "date": "2024-11-20",
+      "description": "Recording fees: $75 purchase recording, $1,000 Require Real Estate Solutions recording, $15 county recording, $65 mortgage fee — CSC Global e-Recording",
+      "category": "Acquisition",
+      "amount": 1155.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-01-28",
+      "description": "Property taxes capitalized to asset (balance sheet carrying cost): Q4-2024 balance due + Q1-2025 installments + accrued 2025-26 balance",
+      "category": "Carrying Costs",
+      "amount": 4778.51,
+      "accrues_interest": false
+    },
+    {
+      "date": "2024-10-31",
+      "description": "Property insurance capitalized (OSC/Unitas Financial, net portion remaining in carrying cost after reclassifications)",
+      "category": "Carrying Costs",
+      "amount": 350.88,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-12-19",
+      "description": "Utilities: PSE&G electric (Oct-2025 through Jun-2026) + oil delivery (Oil Company Processing, Dec-2025 through Apr-2026)",
+      "category": "Carrying Costs",
+      "amount": 4308.92,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-11-06",
+      "description": "Construction labor — A&A Quality Painting: deposit + first three installments (Nov-6, Nov-20, Nov-26, 2025)",
+      "category": "Construction",
+      "amount": 6000.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-12-11",
+      "description": "Construction labor — A&A Quality Painting: Dec-2 + Dec-11 installments",
+      "category": "Construction",
+      "amount": 4000.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-12-30",
+      "description": "Construction labor — A&A Quality Painting: Dec-30 installment",
+      "category": "Construction",
+      "amount": 2000.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-01-06",
+      "description": "Construction labor — A&A Quality Painting: Jan-6 ($4,000) + Jan-14 final labor ($200)",
+      "category": "Construction",
+      "amount": 4200.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-05-12",
+      "description": "Landscaping — A&A Quality Painting (front yard)",
+      "category": "Construction",
+      "amount": 750.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-11-05",
+      "description": "Septic inspection and report — NJ Septic Management ($550) + Ashpa dumpster/dumping/fuel surcharge Nov-18 ($677.65)",
+      "category": "Construction",
+      "amount": 1227.65,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-12-02",
+      "description": "Dumpster, dumping fees, fuel surcharge — Ashpa Management Dec-2 (30-yd roll-off + $372.75 + $15)",
+      "category": "Construction",
+      "amount": 637.75,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-01-13",
+      "description": "Dumpster, dumping fees, fuel surcharge — Ashpa Management Jan-13 ($250 + $520.80 + $15)",
+      "category": "Construction",
+      "amount": 785.80,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-01-20",
+      "description": "Brewer Septic and Construction — deposit for septic system work ($18,300) + Final Touch Cleaning Plus deep clean ($750)",
+      "category": "Construction",
+      "amount": 19050.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-01-27",
+      "description": "Harmony Flooring NJ LLC — carpet ($1,232), metal transitions ($30), tax ($41.80)",
+      "category": "Construction",
+      "amount": 1303.80,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-02-03",
+      "description": "CLR Floor Designer LLC — sand and finish hardwood floors",
+      "category": "Construction",
+      "amount": 1725.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-05-05",
+      "description": "Brewer Septic and Construction — final payment invoice #260112 ($11,700 paid; $700 holdback retained per Robert, netted here)",
+      "category": "Construction",
+      "amount": 11000.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-05-19",
+      "description": "Augusta Staging NJ LLC — home staging",
+      "category": "Construction",
+      "amount": 2700.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-09-25",
+      "description": "Construction materials — Benlock and Safe Inc (hardware/security supplies)",
+      "category": "Construction",
+      "amount": 538.45,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-11-28",
+      "description": "Construction materials — Sherwin Williams, Home Depot (A&A reimbursements), Wilco LLC, Amazon (x2), Park Ave Appliance, Lowes (Nov-2025 batch)",
+      "category": "Construction",
+      "amount": 7015.03,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-12-18",
+      "description": "Construction materials — Emanuel Rosin HD reimbursements ($786.60) + ElectricBargainstore ($80.63)",
+      "category": "Construction",
+      "amount": 867.23,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-01-19",
+      "description": "Construction materials — A&A material reimbursement Jan-14 ($5,111.48) + Kenins hardware ($277.09) + Paskesz winterization ($200.00)",
+      "category": "Construction",
+      "amount": 5588.57,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-05-11",
+      "description": "Construction materials — Motion City Media (photography/marketing)",
+      "category": "Construction",
+      "amount": 224.95,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-12-31",
+      "description": "Property insurance expense (operating) — Unitas Financial monthly premiums through Dec-2025 per JE 16976 reclassification",
+      "category": "Operating Expenses",
+      "amount": 1357.18,
+      "accrues_interest": false
+    },
+    {
+      "date": "2026-01-06",
+      "description": "Property insurance expense (operating) — Unitas Financial monthly premiums Jan through May 2026 (5 x $113.75)",
+      "category": "Operating Expenses",
+      "amount": 568.75,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-05-30",
+      "description": "Attorney fees — Pickus & Landsberg, ejectment proceedings (tenant holdover)",
+      "category": "Operating Expenses",
+      "amount": 2500.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-01-28",
+      "description": "Real estate tax — cash-basis operating expense (Q4-2024 balance $28.18 + Q1-2025 $2,141.83 + adjustments $29.50)",
+      "category": "Operating Expenses",
+      "amount": 2199.51,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-03-03",
+      "description": "Postage and delivery — FedEx (net of credit)",
+      "category": "Operating Expenses",
+      "amount": 8.74,
+      "accrues_interest": false
+    },
+    {
+      "date": "2025-10-29",
+      "description": "Forfeited seller U&O deposit — seller held over past U&O end date; $50,000 attorney-held escrow forfeited to owner per JE 15535. Reduces effective acquisition cost.",
+      "category": "Income",
+      "amount": -50000.00,
+      "accrues_interest": false
+    },
+    {
+      "date": "2024-10-30",
+      "description": "Arknew Funding LLC — hard money loan Draw 1 (acquisition/bridge-out). Confirmation 1012533524. basis=false: interest accrues but principal already in acquisition cost entries above.",
+      "category": "Hard Money Loan",
+      "amount": 170000.00,
+      "basis": false,
+      "accrues_interest": true,
+      "interest_rate": 0.12
+    },
+    {
+      "date": "2024-12-17",
+      "description": "Oak Tree Equities LLC — mezzanine advance Draw 1. Confirmation 1028009958.",
+      "category": "Hard Money Loan",
+      "amount": 10000.00,
+      "basis": false,
+      "accrues_interest": true,
+      "interest_rate": 0.12
+    },
+    {
+      "date": "2025-12-16",
+      "description": "Arknew Funding LLC — Draw 2, additional construction funding. Confirmation 1149254810.",
+      "category": "Hard Money Loan",
+      "amount": 30000.00,
+      "basis": false,
+      "accrues_interest": true,
+      "interest_rate": 0.12
+    },
+    {
+      "date": "2025-12-16",
+      "description": "Arknew Funding LLC — Draw 3, construction. Confirmation 1149466182.",
+      "category": "Hard Money Loan",
+      "amount": 3000.00,
+      "basis": false,
+      "accrues_interest": true,
+      "interest_rate": 0.12
+    },
+    {
+      "date": "2025-12-16",
+      "description": "Arknew Funding LLC — Draw 4, construction. Confirmation 1149466957.",
+      "category": "Hard Money Loan",
+      "amount": 200.00,
+      "basis": false,
+      "accrues_interest": true,
+      "interest_rate": 0.12
+    },
+    {
+      "date": "2025-12-18",
+      "description": "Jeffrey D. Stanger wire (Arknew Funding LLC Draw 5) — construction funding.",
+      "category": "Hard Money Loan",
+      "amount": 16800.00,
+      "basis": false,
+      "accrues_interest": true,
+      "interest_rate": 0.12
+    },
+    {
+      "date": "2026-05-08",
+      "description": "Oak Tree Equities LLC — advance Draw 2. Confirmation 1198089856.",
+      "category": "Hard Money Loan",
+      "amount": 20000.00,
+      "basis": false,
+      "accrues_interest": true,
+      "interest_rate": 0.12
+    }
+  ],
+  "notes": "Balance sheet (accrual basis) as of 2026-06-09: total assets $298,483.03; loans payable $250,000 (Arknew $220K + Oak Tree $30K); AP $5,117.21; retained earnings $43,365.82. Income statement (cash basis): rent/U&O $50,000; operating expenses $6,634.18; NOI $43,365.82. Loan draws are marked basis=false to avoid double-counting with cost line items. U&O forfeiture: seller purchased property subject to holdover; $50,000 attorney escrow forfeited 2025-10-29 per JE 15535. Brewer Septic $700 holdback retained by owner (not yet released). Outstanding AP $5,117.21 and operating cash overdraft -$6,655.69 will need to be funded at closing. Total cost basis ~$261,773 before interest on draws. Target prices bracket breakeven of approx. $319,000 assuming ~$37,800 in accrued 12% interest."
+}
