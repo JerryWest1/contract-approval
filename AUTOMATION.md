@@ -39,7 +39,21 @@ for property folders (e.g. `52 Hawkin Road, Medford`). For each property folder:
    - Run `scripts/analyze.py` then `scripts/generate_pdf.py`.
 
 4. **Upload** the generated `<Property> - Board Summary <YYYY-MM-DD>.pdf` back
-   into the **same Drive folder** it came from.
+   into the **same Drive folder** it came from. **Do NOT use the chat-style Drive
+   connector to upload** — it corrupts binary PDFs. Instead use the binary-safe
+   uploader (a service-account credential must be present as
+   `GOOGLE_SERVICE_ACCOUNT_JSON`):
+
+   ```bash
+   pip install -q google-api-python-client google-auth
+   python3 .claude/skills/property-cfo-analysis/scripts/upload_to_drive.py \
+     --file "deals/<Property Name>/<Property Name> - Board Summary <YYYY-MM-DD>.pdf" \
+     --drive "LIGHTHOUSE" \
+     --folder "<the exact Drive folder name this property came from>"
+   ```
+   The connector is fine for **reading/listing** files; only the **upload** must
+   go through this script. After upload, open the link it prints and confirm the
+   PDF renders fully (not just the header).
 
 5. **Never fabricate figures.** Record assumptions in `deal.json`'s `notes`.
 
