@@ -65,6 +65,11 @@ def analyze(deal):
         entry_date = parse_date(raw.get("date"))
         rate = float(raw.get("interest_rate", default_rate))
         accrues = raw.get("accrues_interest", True)
+        # basis=False marks an interest-only entry (e.g. a loan draw): it accrues
+        # interest but its principal is NOT added to the cost basis, because the
+        # money it funded is already captured by the cost line items. This avoids
+        # double-counting financed dollars on a leveraged deal.
+        counts_basis = raw.get("basis", True)
         category = raw.get("category", "Other") or "Other"
         description = raw.get("description", "")
 
@@ -75,16 +80,18 @@ def analyze(deal):
 
         interest = money(amount * rate * (days_out / day_count)) if accrues else 0.0
 
-        total_basis += amount
         total_interest += interest
-        category_basis[category] = money(category_basis.get(category, 0) + amount)
         category_interest[category] = money(category_interest.get(category, 0) + interest)
+        if counts_basis:
+            total_basis += amount
+            category_basis[category] = money(category_basis.get(category, 0) + amount)
 
         entries_out.append({
             "date": entry_date.isoformat() if entry_date else None,
             "description": description,
             "category": category,
             "amount": amount,
+            "counts_basis": bool(counts_basis),
             "interest_rate": rate,
             "accrues_interest": bool(accrues),
             "days_out": days_out,

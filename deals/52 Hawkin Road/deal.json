@@ -1,0 +1,29 @@
+{
+  "property": {
+    "name": "52 Hawkin Road",
+    "address": "52 Hawkin Road, Medford, NJ 08055",
+    "as_of_date": "2026-06-09",
+    "default_interest_rate": 0.12,
+    "day_count": 365,
+    "selling_cost_pct": 0.06,
+    "target_sale_prices": [350000, 375000, 400000, 425000]
+  },
+  "entries": [
+    { "date": "2024-10-10", "description": "Purchase price / building basis", "category": "Acquisition",          "amount": 215786.32, "accrues_interest": false },
+    { "date": "2025-12-31", "description": "Building improvements",            "category": "Improvements",         "amount": 9144.86,   "accrues_interest": false },
+    { "date": "2025-12-15", "description": "Construction — labor",             "category": "Construction",         "amount": 16950.00,  "accrues_interest": false },
+    { "date": "2025-12-15", "description": "Construction — repairs",           "category": "Construction",         "amount": 38430.00,  "accrues_interest": false },
+    { "date": "2025-12-15", "description": "Construction — materials",         "category": "Construction",         "amount": 14234.23,  "accrues_interest": false },
+    { "date": "2025-01-31", "description": "Real estate tax",                  "category": "Carrying Costs",       "amount": 4778.51,   "accrues_interest": false },
+    { "date": "2025-06-30", "description": "Utilities",                        "category": "Carrying Costs",       "amount": 4308.92,   "accrues_interest": false },
+    { "date": "2024-11-20", "description": "Recording fees",                   "category": "Carrying Costs",       "amount": 1155.00,   "accrues_interest": false },
+    { "date": "2025-01-02", "description": "Insurance",                        "category": "Carrying Costs",       "amount": 350.88,    "accrues_interest": false },
+
+    { "date": "2024-10-30", "description": "Arknew Funding — initial loan",        "category": "Loan: Arknew Funding",   "amount": 170000.00, "basis": false, "interest_rate": 0.12 },
+    { "date": "2025-12-16", "description": "Arknew Funding — construction draws",  "category": "Loan: Arknew Funding",   "amount": 33200.00,  "basis": false, "interest_rate": 0.12 },
+    { "date": "2025-12-18", "description": "Arknew Funding (Stanger) — construction draw", "category": "Loan: Arknew Funding", "amount": 16800.00, "basis": false, "interest_rate": 0.12 },
+    { "date": "2024-12-17", "description": "Oak Tree Equities — advance",          "category": "Loan: Oak Tree Equities","amount": 10000.00,  "basis": false, "interest_rate": 0.12 },
+    { "date": "2026-05-08", "description": "Oak Tree Equities — advance",          "category": "Loan: Oak Tree Equities","amount": 20000.00,  "basis": false, "interest_rate": 0.12 }
+  ],
+  "notes": "52 Hawkin Road, Medford NJ — fix-and-flip. Cost basis = capitalized project cost ($305,138.72) per balance sheet (Building $224,931.18 + Carrying $80,207.54). Interest accrues only on the $250,000 hard-money loans (Arknew Funding $220,000 + Oak Tree Equities $30,000) at 12% simple, actual/365, by dated draw. EXCLUDED from interest: the $162,822.32 Oak Tree bridge advanced 10/10/2024 and repaid 10/30/2024 (Return of Capital). MEMO (not netted into breakeven): $50,000 U&O income already received (seller forfeited, recorded as rent), $5,117.21 accounts payable, and $6,655.69 operating-cash overdraft outstanding. Breakeven shown is the conservative cost-recovery line (does not credit the $50k income)."
+}

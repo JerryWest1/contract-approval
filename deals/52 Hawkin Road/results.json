@@ -1,0 +1,226 @@
+{
+  "property": {
+    "name": "52 Hawkin Road",
+    "address": "52 Hawkin Road, Medford, NJ 08055",
+    "as_of_date": "2026-06-09",
+    "default_interest_rate": 0.12,
+    "day_count": 365,
+    "selling_cost_pct": 0.06
+  },
+  "totals": {
+    "total_cost_basis": 305138.72,
+    "total_accrued_interest": 37655.8,
+    "all_in_position": 342794.52,
+    "breakeven_sale_price": 364675.02,
+    "entry_count": 14
+  },
+  "categories": [
+    {
+      "category": "Acquisition",
+      "basis": 215786.32,
+      "interest": 0.0
+    },
+    {
+      "category": "Construction",
+      "basis": 69614.23,
+      "interest": 0.0
+    },
+    {
+      "category": "Carrying Costs",
+      "basis": 10593.31,
+      "interest": 0.0
+    },
+    {
+      "category": "Improvements",
+      "basis": 9144.86,
+      "interest": 0.0
+    }
+  ],
+  "entries": [
+    {
+      "date": "2024-10-10",
+      "description": "Purchase price / building basis",
+      "category": "Acquisition",
+      "amount": 215786.32,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 607,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-31",
+      "description": "Building improvements",
+      "category": "Improvements",
+      "amount": 9144.86,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 160,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-15",
+      "description": "Construction \u2014 labor",
+      "category": "Construction",
+      "amount": 16950.0,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 176,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-15",
+      "description": "Construction \u2014 repairs",
+      "category": "Construction",
+      "amount": 38430.0,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 176,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-12-15",
+      "description": "Construction \u2014 materials",
+      "category": "Construction",
+      "amount": 14234.23,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 176,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-01-31",
+      "description": "Real estate tax",
+      "category": "Carrying Costs",
+      "amount": 4778.51,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 494,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-06-30",
+      "description": "Utilities",
+      "category": "Carrying Costs",
+      "amount": 4308.92,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 344,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2024-11-20",
+      "description": "Recording fees",
+      "category": "Carrying Costs",
+      "amount": 1155.0,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 566,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2025-01-02",
+      "description": "Insurance",
+      "category": "Carrying Costs",
+      "amount": 350.88,
+      "counts_basis": true,
+      "interest_rate": 0.12,
+      "accrues_interest": false,
+      "days_out": 523,
+      "accrued_interest": 0.0
+    },
+    {
+      "date": "2024-10-30",
+      "description": "Arknew Funding \u2014 initial loan",
+      "category": "Loan: Arknew Funding",
+      "amount": 170000.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 587,
+      "accrued_interest": 32807.67
+    },
+    {
+      "date": "2025-12-16",
+      "description": "Arknew Funding \u2014 construction draws",
+      "category": "Loan: Arknew Funding",
+      "amount": 33200.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 175,
+      "accrued_interest": 1910.14
+    },
+    {
+      "date": "2025-12-18",
+      "description": "Arknew Funding (Stanger) \u2014 construction draw",
+      "category": "Loan: Arknew Funding",
+      "amount": 16800.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 173,
+      "accrued_interest": 955.53
+    },
+    {
+      "date": "2024-12-17",
+      "description": "Oak Tree Equities \u2014 advance",
+      "category": "Loan: Oak Tree Equities",
+      "amount": 10000.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 539,
+      "accrued_interest": 1772.05
+    },
+    {
+      "date": "2026-05-08",
+      "description": "Oak Tree Equities \u2014 advance",
+      "category": "Loan: Oak Tree Equities",
+      "amount": 20000.0,
+      "counts_basis": false,
+      "interest_rate": 0.12,
+      "accrues_interest": true,
+      "days_out": 32,
+      "accrued_interest": 210.41
+    }
+  ],
+  "scenarios": [
+    {
+      "sale_price": 350000.0,
+      "selling_costs": 21000.0,
+      "net_proceeds": 329000.0,
+      "profit": -13794.52,
+      "roi_on_basis": -0.0452
+    },
+    {
+      "sale_price": 375000.0,
+      "selling_costs": 22500.0,
+      "net_proceeds": 352500.0,
+      "profit": 9705.48,
+      "roi_on_basis": 0.0318
+    },
+    {
+      "sale_price": 400000.0,
+      "selling_costs": 24000.0,
+      "net_proceeds": 376000.0,
+      "profit": 33205.48,
+      "roi_on_basis": 0.1088
+    },
+    {
+      "sale_price": 425000.0,
+      "selling_costs": 25500.0,
+      "net_proceeds": 399500.0,
+      "profit": 56705.48,
+      "roi_on_basis": 0.1858
+    }
+  ],
+  "notes": "52 Hawkin Road, Medford NJ \u2014 fix-and-flip. Cost basis = capitalized project cost ($305,138.72) per balance sheet (Building $224,931.18 + Carrying $80,207.54). Interest accrues only on the $250,000 hard-money loans (Arknew Funding $220,000 + Oak Tree Equities $30,000) at 12% simple, actual/365, by dated draw. EXCLUDED from interest: the $162,822.32 Oak Tree bridge advanced 10/10/2024 and repaid 10/30/2024 (Return of Capital). MEMO (not netted into breakeven): $50,000 U&O income already received (seller forfeited, recorded as rent), $5,117.21 accounts payable, and $6,655.69 operating-cash overdraft outstanding. Breakeven shown is the conservative cost-recovery line (does not credit the $50k income)."
+}
