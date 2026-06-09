@@ -6,9 +6,10 @@
     "appfolioBaseUrl": {
       "title": "AppFolio base URL",
       "type": "string",
-      "description": "Your AppFolio portal URL, e.g. https://YOURCOMPANY.appfolio.com",
+      "description": "Your AppFolio portal URL.",
       "editor": "textfield",
-      "example": "https://yourcompany.appfolio.com"
+      "default": "https://westmarq.appfolio.com",
+      "example": "https://westmarq.appfolio.com"
     },
     "appfolioEmail": {
       "title": "AppFolio login email",

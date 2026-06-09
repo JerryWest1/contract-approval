@@ -6,7 +6,7 @@ await Actor.init();
 
 const input = (await Actor.getInput()) ?? {};
 const {
-    appfolioBaseUrl,
+    appfolioBaseUrl = 'https://westmarq.appfolio.com',
     appfolioEmail,
     appfolioPassword,
     mfaCode,
