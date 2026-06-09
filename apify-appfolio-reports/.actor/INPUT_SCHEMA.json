@@ -1,0 +1,74 @@
+{
+  "title": "AppFolio CFO Reports input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "appfolioBaseUrl": {
+      "title": "AppFolio base URL",
+      "type": "string",
+      "description": "Your AppFolio portal URL, e.g. https://YOURCOMPANY.appfolio.com",
+      "editor": "textfield",
+      "example": "https://yourcompany.appfolio.com"
+    },
+    "appfolioEmail": {
+      "title": "AppFolio login email",
+      "type": "string",
+      "description": "Username/email for the AppFolio login.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "appfolioPassword": {
+      "title": "AppFolio password",
+      "type": "string",
+      "description": "Password for the AppFolio login.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "mfaCode": {
+      "title": "MFA code (only when prompted)",
+      "type": "string",
+      "description": "Leave blank for normal runs. AppFolio remembers this device for ~30 days, so MFA is only requested about once a month. When the Actor reports it needs MFA, paste the fresh code here and re-run once to refresh the saved session.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "reports": {
+      "title": "Reports to export",
+      "type": "array",
+      "description": "Which reports to export and their parameters. Defaults cover the three CFO reports.",
+      "editor": "json",
+      "prefill": [
+        { "key": "balance_sheet", "label": "Balance Sheet", "basis": "Accrual", "dateMode": "as_of", "asOf": "today" },
+        { "key": "income_statement", "label": "Income Statement", "basis": "Accrual", "dateMode": "range", "range": "all_time" },
+        { "key": "general_ledger", "label": "General Ledger", "basis": "Accrual", "dateMode": "range", "range": "all_time", "accounts": "all" }
+      ]
+    },
+    "googleServiceAccountJson": {
+      "title": "Google service account JSON",
+      "type": "string",
+      "description": "Full JSON key of a Google service account that has been added as a member (Content manager) of the LIGHTHOUSE shared drive. Used to upload the PDFs.",
+      "editor": "json",
+      "isSecret": true
+    },
+    "driveFolderId": {
+      "title": "Destination Drive folder ID",
+      "type": "string",
+      "description": "Google Drive folder ID for LIGHTHOUSE > CFO Report Inbox.",
+      "editor": "textfield",
+      "default": "18EJXtLspRF4_aiY4SLIU-AdjIVzfpVG9"
+    },
+    "sharedDriveId": {
+      "title": "Shared Drive ID",
+      "type": "string",
+      "description": "ID of the LIGHTHOUSE shared drive.",
+      "editor": "textfield",
+      "default": "0AEkNu1w9w6ORUk9PVA"
+    },
+    "debugMode": {
+      "title": "Debug mode",
+      "type": "boolean",
+      "description": "When true, saves screenshots + page HTML to the key-value store at each step so the AppFolio selectors/URLs can be verified and tuned. Turn this on for the first run.",
+      "default": true
+    }
+  },
+  "required": ["appfolioBaseUrl", "appfolioEmail", "appfolioPassword", "googleServiceAccountJson"]
+}

@@ -1,0 +1,16 @@
+{
+  "actorSpecification": 1,
+  "name": "appfolio-cfo-reports",
+  "title": "AppFolio CFO Reports → Google Drive",
+  "description": "Logs into AppFolio, exports Balance Sheet (accrual, current date), Income Statement (accrual, all time), and General Ledger (all accounts, all time) as PDF, then uploads them to the LIGHTHOUSE > CFO Report Inbox shared drive.",
+  "version": "0.1",
+  "input": "./INPUT_SCHEMA.json",
+  "dockerfile": "../Dockerfile",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "title": "Run results",
+      "views": {}
+    }
+  }
+}
