@@ -84,12 +84,34 @@ def files_settled(files):
     return (time.time() - newest) >= SETTLE_SECONDS
 
 
+def claude_executable():
+    """Resolve the Claude Code CLI. Prefer the path pinned by setup.ps1
+    (claude_path.txt) since the background watcher may not inherit PATH."""
+    cfg = BASE / "claude_path.txt"
+    if cfg.exists():
+        p = cfg.read_text(encoding="utf-8").strip()
+        if p:
+            return p
+    return "claude"
+
+
+def build_claude_cmd(prompt: str):
+    exe = claude_executable()
+    low = exe.lower()
+    args = ["-p", prompt, "--dangerously-skip-permissions"]
+    if low.endswith((".cmd", ".bat")):
+        return ["cmd", "/c", exe, *args]
+    if low.endswith(".ps1"):
+        return ["powershell", "-ExecutionPolicy", "Bypass", "-File", exe, *args]
+    return [exe, *args]
+
+
 def run_claude(folder: Path):
     name = folder.name
     log(f"Processing '{name}' ({len(source_files(folder))} files)...")
     inprogress = folder / ".cfo_inprogress"
     inprogress.write_text(datetime.now().isoformat(), encoding="utf-8")
-    cmd = ["claude", "-p", PROMPT.format(name=name), "--dangerously-skip-permissions"]
+    cmd = build_claude_cmd(PROMPT.format(name=name))
     try:
         with open(folder / "cfo_run.log", "w", encoding="utf-8") as logf:
             result = subprocess.run(
@@ -104,8 +126,8 @@ def run_claude(folder: Path):
             log(f"WARN '{name}' — Claude exited {result.returncode}; "
                 f"see deals/{name}/cfo_run.log. Will retry after files change.")
     except FileNotFoundError:
-        log("ERROR: 'claude' command not found on PATH. Install Claude Code or "
-            "set the full path in this script.")
+        log("ERROR: Claude Code CLI not found. Re-run windows\\setup.ps1 so it "
+            "can pin the path (claude_path.txt), or install the CLI.")
     except subprocess.TimeoutExpired:
         log(f"WARN '{name}' — timed out after 15 min; see cfo_run.log.")
     finally:

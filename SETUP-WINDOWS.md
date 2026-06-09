@@ -67,15 +67,18 @@ The watcher is running. Leave it — it starts on its own from now on.
   it to see exactly which costs and loan draws were used — that's the audit trail.
 
 ## Stop / start / check the watcher
+The watcher auto-starts via a shortcut in your **Startup folder**, so no admin
+rights are needed.
+
 ```powershell
-# stop it (and stop auto-start)
-Unregister-ScheduledTask -TaskName 'PropertyCFO-Watcher' -Confirm:$false
+# stop it now: end the background process
+Get-Process pythonw -ErrorAction SilentlyContinue | Stop-Process
 
-# start it again right now
-Start-ScheduledTask -TaskName 'PropertyCFO-Watcher'
+# turn OFF auto-start at log-in (delete the Startup shortcut)
+Remove-Item "$([Environment]::GetFolderPath('Startup'))\PropertyCFO-Watcher.lnk"
 
-# is it registered?
-Get-ScheduledTask -TaskName 'PropertyCFO-Watcher'
+# start it again now
+powershell -ExecutionPolicy Bypass -File .\windows\setup.ps1
 ```
 To watch it live in a visible window instead, double-click `windows\run_watcher.bat`.
 

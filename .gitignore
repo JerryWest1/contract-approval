@@ -3,3 +3,10 @@
 # Python
 __pycache__/
 *.pyc
+
+# Machine-specific (do not commit)
+claude_path.txt
+auto_runner.log
+**/cfo_run.log
+**/.cfo_processed
+**/.cfo_inprogress
