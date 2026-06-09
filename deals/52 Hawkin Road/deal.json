@@ -18,6 +18,7 @@
     { "date": "2025-06-30", "description": "Utilities",                        "category": "Carrying Costs",       "amount": 4308.92,   "accrues_interest": false },
     { "date": "2024-11-20", "description": "Recording fees",                   "category": "Carrying Costs",       "amount": 1155.00,   "accrues_interest": false },
     { "date": "2025-01-02", "description": "Insurance",                        "category": "Carrying Costs",       "amount": 350.88,    "accrues_interest": false },
+    { "date": "2025-10-29", "description": "Less: U&O income received (seller forfeited)", "category": "Less: Income Received", "amount": -50000.00, "accrues_interest": false },
 
     { "date": "2024-10-30", "description": "Arknew Funding — initial loan",        "category": "Loan: Arknew Funding",   "amount": 170000.00, "basis": false, "interest_rate": 0.12 },
     { "date": "2025-12-16", "description": "Arknew Funding — construction draws",  "category": "Loan: Arknew Funding",   "amount": 33200.00,  "basis": false, "interest_rate": 0.12 },
@@ -25,5 +26,5 @@
     { "date": "2024-12-17", "description": "Oak Tree Equities — advance",          "category": "Loan: Oak Tree Equities","amount": 10000.00,  "basis": false, "interest_rate": 0.12 },
     { "date": "2026-05-08", "description": "Oak Tree Equities — advance",          "category": "Loan: Oak Tree Equities","amount": 20000.00,  "basis": false, "interest_rate": 0.12 }
   ],
-  "notes": "52 Hawkin Road, Medford NJ — fix-and-flip. Cost basis = capitalized project cost ($305,138.72) per balance sheet (Building $224,931.18 + Carrying $80,207.54). Interest accrues only on the $250,000 hard-money loans (Arknew Funding $220,000 + Oak Tree Equities $30,000) at 12% simple, actual/365, by dated draw. EXCLUDED from interest: the $162,822.32 Oak Tree bridge advanced 10/10/2024 and repaid 10/30/2024 (Return of Capital). MEMO (not netted into breakeven): $50,000 U&O income already received (seller forfeited, recorded as rent), $5,117.21 accounts payable, and $6,655.69 operating-cash overdraft outstanding. Breakeven shown is the conservative cost-recovery line (does not credit the $50k income)."
+  "notes": "52 Hawkin Road, Medford NJ — fix-and-flip. Net cost basis = capitalized project cost $305,138.72 LESS $50,000 U&O income already received (seller forfeited, booked as rent) = $255,138.72. Interest accrues only on the $250,000 hard-money loans (Arknew Funding $220,000 + Oak Tree Equities $30,000) at 12% simple, actual/365, by dated draw. EXCLUDED from interest: the $162,822.32 Oak Tree bridge advanced 10/10/2024 and repaid 10/30/2024 (Return of Capital). Accounts payable ($5,117.21) and the operating-cash overdraft ($6,655.69) are intentionally excluded — they are accrued/timing items, not additional cash cost. Selling costs assumed at 6%."
 }

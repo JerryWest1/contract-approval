@@ -37,7 +37,8 @@ MARGIN = 0.6 * inch
 def usd(x, cents=False):
     if x is None:
         return "—"
-    return ("${:,.2f}" if cents else "${:,.0f}").format(x)
+    fmt = "{:,.2f}" if cents else "{:,.0f}"
+    return ("-$" + fmt.format(abs(x))) if x < 0 else ("$" + fmt.format(x))
 
 
 def pct(x):
