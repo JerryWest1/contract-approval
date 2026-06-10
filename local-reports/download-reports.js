@@ -33,6 +33,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const BASE_URL = (process.env.APPFOLIO_URL || 'https://westmarq.appfolio.com').replace(/\/$/, '');
 const REPORT_DIR =
     process.env.REPORT_DIR || 'G:\\Shared drives\\LIGHTHOUSE\\CFO Report Inbox';
+// Which property/portfolio scope to run the reports for. "All Properties"
+// produces a consolidated company-wide statement. Set to an exact property or
+// portfolio name to scope it down.
+const PROPERTY = process.env.PROPERTY || 'All Properties';
 const PROFILE_DIR = join(__dirname, 'browser-profile');
 const DEBUG_DIR = join(__dirname, 'debug');
 const HEADLESS = process.env.HEADLESS === '1';
@@ -101,6 +105,35 @@ async function setAllTimeRange(page) {
     if (await to.isVisible().catch(() => false)) await to.fill(today());
 }
 
+/**
+ * Select the property / portfolio scope on the report form (best-effort).
+ * AppFolio usually exposes this as a searchable dropdown or multi-select.
+ * "All Properties" means leave it at / choose the consolidated option.
+ */
+async function setProperty(page, property) {
+    if (!property) return;
+    const selectors = [
+        'select[name*="propert"]',
+        'select[name*="portfolio"]',
+        '[aria-label*="Propert"]',
+        '[placeholder*="Propert"]',
+    ];
+    for (const sel of selectors) {
+        const el = page.locator(sel).first();
+        if (!(await el.isVisible().catch(() => false))) continue;
+        // Native <select>: pick by visible label.
+        if ((await el.evaluate((n) => n.tagName).catch(() => '')) === 'SELECT') {
+            await el.selectOption({ label: property }).catch(() => {});
+            return;
+        }
+        // Searchable combobox: type and pick the matching option.
+        await el.click().catch(() => {});
+        await page.keyboard.type(property).catch(() => {});
+        await page.locator(`text="${property}"`).first().click().catch(() => {});
+        return;
+    }
+}
+
 async function openExportMenu(page) {
     const menu = page
         .locator('button:has-text("Export"), button:has-text("Download"), [aria-label="Export"]')
@@ -114,6 +147,7 @@ async function exportReport(page, report) {
     await dump(page, `${report.key}-01-form`);
 
     await setBasis(page, report.basis);
+    await setProperty(page, PROPERTY);
     if (report.dateMode === 'as_of') await setAsOf(page);
     else await setAllTimeRange(page);
 
