@@ -1,0 +1,16 @@
+{
+  "name": "appfolio-local-reports",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Local Playwright script that logs into AppFolio and saves Balance Sheet / Income Statement / General Ledger PDFs straight into the CFO Report Inbox.",
+  "scripts": {
+    "login": "node download-reports.js login",
+    "start": "node download-reports.js"
+  },
+  "dependencies": {
+    "playwright": "^1.44.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
