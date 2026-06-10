@@ -11,23 +11,56 @@ import sys
 import re
 
 TAX_ATTORNEYS = [
+    # Pellegrino & Feldstein
     "pellegrino and feldstein",
+    "pellegrino feldstein",
+    # Gary Zeitz
     "gary c. zeitz",
     "gary zeitz",
+    "zeitz",
+    # Boudwin Ross Roy Leodori
     "boudwin ross roy leodori",
+    "boudwin ross",
+    # Taylor & Keyser
     "taylor and keyser",
+    "taylor keyser",
+    # Honig & Greenberg
     "honig and greenberg",
+    "honig greenberg",
+    # Robert Del Vecchio — confirmed missing; multiple spellings in use
     "robert a. delvecchio",
+    "robert delvecchio",
+    "delvecchio",
+    "del vecchio",
+    # Goldenberg Mackler — Keith Bonchi files under personal name, bypassing firm lookup
     "goldenberg, mackler, sayegh",
     "goldenberg mackler",
+    "keith bonchi",
+    "bonchi",
+    # Lamb McErlane
     "lamb mcerlane",
+    # Anthony Velasquez — confirmed misspellings appearing in scraped data
     "anthony l. velasquez",
+    "anthony velasquez",
+    "anthony valesquez",
+    "anthony valazquez",
+    "anthony valesuez",
+    "velasquez",
+    "valesquez",
+    "valazquez",
+    "valesuez",
+    # Simeone & Raynor
     "simeone and raynor",
+    "simeone raynor",
+    # Lacsina
     "patrick o. lacsina",
-    "lacsina law",
+    "patrick lacsina",
+    "lacsina",
 ]
 
-CONDO_KEYWORDS = ["association", "hoa", "condo", "homeowners", "home owners"]
+CONDO_KEYWORDS = ["association", "hoa", "condo", "homeowners", "home owners", "community corporation"]
+BANK_EXCLUSIONS = ["bank", "trust", "national assoc", "savings", "mortgage", "loan", "financial",
+                   "credit union", "fund", "llc", "corp", "fbo", "capital", "servic"]
 
 
 def normalize(s):
@@ -48,7 +81,12 @@ def fuzzy_match_tax(attorney):
 
 def is_condo_plaintiff(plaintiff):
     n = normalize(plaintiff)
-    return any(kw in n for kw in CONDO_KEYWORDS)
+    if not any(kw in n for kw in CONDO_KEYWORDS):
+        return False
+    # Don't flag banks/financial entities that happen to contain "association"
+    if any(ex in n for ex in BANK_EXCLUSIONS):
+        return False
+    return True
 
 
 def main():
