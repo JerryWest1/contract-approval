@@ -37,10 +37,11 @@ def normalize(s):
 
 def fuzzy_match_tax(attorney):
     n = normalize(attorney)
+    n_words = set(n.split())
     for pattern in TAX_ATTORNEYS:
-        # Check if any significant word from the pattern appears
-        words = [w for w in pattern.split() if len(w) > 3]
-        if any(w in n for w in words):
+        # Require significant words to match as whole words (not substrings)
+        sig_words = [w for w in pattern.split() if len(w) > 4]
+        if sig_words and any(w in n_words for w in sig_words):
             return pattern
     return None
 
