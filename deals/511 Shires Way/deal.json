@@ -1,0 +1,38 @@
+{
+  "property": {
+    "name": "511 Shires Way",
+    "address": "511 Shires Way, Egg Harbor, NJ 08234",
+    "as_of_date": "2026-06-09",
+    "default_interest_rate": 0.12,
+    "day_count": 365,
+    "selling_cost_pct": 0.06,
+    "target_sale_prices": [300000, 320000, 340000, 360000]
+  },
+  "entries": [
+    { "date": "2024-11-06", "description": "Purchase price / building basis (Building Property)", "category": "Acquisition",    "amount": 141244.31, "accrues_interest": false },
+    { "date": "2025-12-31", "description": "Capitalized acquisition soft costs reclassed to Improvements (finders fee $5,000, title $1,585, recording $62, R/E tax $1,993.32, insurance $70.35, sewer $368.10, postage $8.99)", "category": "Improvements", "amount": 9087.76, "accrues_interest": false },
+    { "date": "2026-02-09", "description": "U&O release payment (Aubrey McIntosh, check 805)",    "category": "Improvements",   "amount": 30000.00,  "accrues_interest": false },
+    { "date": "2026-02-09", "description": "U&O charge to occupant capitalized to Improvements (JE 16846)", "category": "Improvements", "amount": 46100.00, "accrues_interest": false },
+    { "date": "2026-05-01", "description": "Construction in progress — labor",                    "category": "Construction",   "amount": 37448.12,  "accrues_interest": false },
+    { "date": "2026-06-09", "description": "Construction in progress — repairs",                  "category": "Construction",   "amount": 11964.92,  "accrues_interest": false },
+    { "date": "2026-06-09", "description": "Construction in progress — materials",                "category": "Construction",   "amount": 38458.95,  "accrues_interest": false },
+    { "date": "2026-06-09", "description": "Carrying cost — insurance (balance sheet)",           "category": "Carrying Costs", "amount": 98.44,     "accrues_interest": false },
+    { "date": "2026-06-09", "description": "Carrying cost — utilities (balance sheet)",           "category": "Carrying Costs", "amount": 1509.42,   "accrues_interest": false },
+
+    { "date": "2025-12-31", "description": "Recording & filing fees (P&L)",                       "category": "Operating Expenses", "amount": 70.00,    "accrues_interest": false },
+    { "date": "2026-05-12", "description": "Insurance expense (P&L)",                             "category": "Operating Expenses", "amount": 1876.80,  "accrues_interest": false },
+    { "date": "2025-12-31", "description": "Postage & delivery (P&L)",                            "category": "Operating Expenses", "amount": 19.65,    "accrues_interest": false },
+    { "date": "2025-12-31", "description": "Real estate tax (P&L)",                               "category": "Operating Expenses", "amount": 8280.55,  "accrues_interest": false },
+    { "date": "2026-05-08", "description": "Repairs & maintenance — material (P&L, Lowes)",       "category": "Operating Expenses", "amount": 482.24,   "accrues_interest": false },
+    { "date": "2025-12-31", "description": "Utilities (P&L)",                                     "category": "Operating Expenses", "amount": 370.00,   "accrues_interest": false },
+
+    { "date": "2026-02-09", "description": "Less: forfeited U&O / rent income received from occupant", "category": "Less: Income Received", "amount": -46100.00, "accrues_interest": false },
+
+    { "date": "2024-11-05", "description": "Oak Tree Equities — loan for purchase",  "category": "Loan: Oak Tree Equities", "amount": 150000.00, "basis": false, "interest_rate": 0.12 },
+    { "date": "2025-03-06", "description": "Oak Tree Equities — advance",            "category": "Loan: Oak Tree Equities", "amount": 10000.00,  "basis": false, "interest_rate": 0.12 },
+    { "date": "2026-02-09", "description": "Oak Tree Equities — loan",               "category": "Loan: Oak Tree Equities", "amount": 30000.00,  "basis": false, "interest_rate": 0.12 },
+    { "date": "2026-04-14", "description": "Oak Tree Equities — loan",               "category": "Loan: Oak Tree Equities", "amount": 50000.00,  "basis": false, "interest_rate": 0.12 },
+    { "date": "2026-05-08", "description": "Oak Tree Equities — loan",               "category": "Loan: Oak Tree Equities", "amount": 20000.00,  "basis": false, "interest_rate": 0.12 }
+  ],
+  "notes": "511 Shires Way, Egg Harbor NJ 08234 — fix-and-flip. Net cost basis = capitalized cost on the balance sheet $315,911.92 (Building $226,432.07 + Carrying Cost incl. CIP $89,479.85) PLUS $11,099.24 operating expenses run through the P&L (recording $70, insurance $1,876.80, postage $19.65, R/E tax $8,280.55, material $482.24, utilities $370) LESS $46,100 forfeited U&O income already received (charged to occupant 02/09/2026, booked as rent) = $280,911.16. Interest accrues only on the $260,000 Oak Tree Equities LLC loan at 12% simple, actual/365, by dated draw ($150,000 11/05/2024; $10,000 03/06/2025; $30,000 02/09/2026; $50,000 04/14/2026; $20,000 05/08/2026). Accounts payable ($1,630.56), the Lighthouse credit-card balance ($48.26) and the operating-cash overdraft ($19,232.34) are intentionally excluded — funding/timing items, not additional cost. Capitalized-cost dates within Improvements/CIP are the GL posting or reclass dates (interest-free entries, so dates do not affect the math). The $98.44 balance-sheet carrying-cost insurance line could not be tied to a dated GL posting; taken from the 06/09/2026 balance sheet. Selling costs assumed at 6%. All figures from the 06/09/2026 balance sheet, all-time income statement, and general ledger."
+}
