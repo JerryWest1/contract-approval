@@ -115,7 +115,9 @@ def run_project(folder: Path) -> bool:
         f.write("\n--- stderr ---\n" + (result.stderr or ""))
 
     if result.returncode == 0:
-        log(f"[done] {project} -> {output_dir / 'board_summary.pdf'}")
+        pdfs = sorted(output_dir.glob("*Board Summary*.pdf"),
+                      key=lambda p: p.stat().st_mtime)
+        log(f"[done] {project} -> {pdfs[-1] if pdfs else output_dir}")
         return True
     log(f"[error] {project} exited {result.returncode} — see "
         f"{output_dir / 'run.log'} and exceptions.csv")

@@ -406,20 +406,28 @@ def write_html(output_dir: Path, results: dict):
     (output_dir / "board_summary.html").write_text(html, encoding="utf-8")
 
 
-def render_board_pdf(results: dict, output_dir: Path):
-    target = output_dir / "board_summary.pdf"
+def render_board_pdf(results: dict, output_dir: Path, project_name: str):
+    """PDF is named '<Property> - Board Summary <date>.pdf'. Stale summaries
+    are removed first so the folder always holds exactly one current report
+    (best effort — a locked file falls back to a timestamped name)."""
+    stamp = date.today().isoformat()
+    target = output_dir / f"{project_name} - Board Summary {stamp}.pdf"
+    stale = list(output_dir.glob("*Board Summary*.pdf"))
+    stale += list(output_dir.glob("board_summary*.pdf"))
+    for old in stale:
+        if old != target:
+            try:
+                old.unlink()
+            except PermissionError:
+                pass
     try:
         pdfgen.draw(results, str(target))
         return target
     except PermissionError:
         fallback = output_dir / (
-            f"board_summary_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf")
+            f"{project_name} - Board Summary "
+            f"{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf")
         pdfgen.draw(results, str(fallback))
-        latest = output_dir / "board_summary_latest.pdf"
-        try:
-            latest.write_bytes(fallback.read_bytes())
-        except PermissionError:
-            pass
         return fallback
 
 
@@ -549,7 +557,7 @@ def main(argv=None):
     write_workpaper(output_dir, results)
     write_html(output_dir, results)
     write_exceptions(output_dir, exceptions)
-    pdf_path = render_board_pdf(results, output_dir)
+    pdf_path = render_board_pdf(results, output_dir, args.project_name)
 
     t = results["totals"]
     print(f"Project: {args.project_name}")
