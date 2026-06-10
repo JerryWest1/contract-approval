@@ -1,0 +1,6 @@
+{
+  "default_interest_rate": 0.12,
+  "day_count": 365,
+  "selling_cost_pct": 0.06,
+  "target_price_offsets": [-20000, 0, 20000, 50000]
+}

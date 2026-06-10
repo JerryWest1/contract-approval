@@ -10,3 +10,11 @@ auto_runner.log
 **/cfo_run.log
 **/.cfo_processed
 **/.cfo_inprogress
+
+# Local watcher runtime (financial files & outputs stay off GitHub)
+inbox/*
+outputs/*
+logs/*
+!inbox/.gitkeep
+!outputs/.gitkeep
+!logs/.gitkeep
