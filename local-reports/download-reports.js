@@ -27,16 +27,17 @@ import { chromium } from 'playwright';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { mkdir, writeFile } from 'node:fs/promises';
+import { createInterface } from 'node:readline/promises';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const BASE_URL = (process.env.APPFOLIO_URL || 'https://westmarq.appfolio.com').replace(/\/$/, '');
 const REPORT_DIR =
     process.env.REPORT_DIR || 'G:\\Shared drives\\LIGHTHOUSE\\CFO Report Inbox';
-// Which property/portfolio scope to run the reports for. "All Properties"
-// produces a consolidated company-wide statement. Set to an exact property or
-// portfolio name to scope it down.
-const PROPERTY = process.env.PROPERTY || 'All Properties';
+// Which property/portfolio scope to run the reports for. Set via the popup /
+// prompt at run time (or the PROPERTY env var). Blank = "All Properties"
+// (consolidated company-wide statement).
+let PROPERTY = process.env.PROPERTY || '';
 const PROFILE_DIR = join(__dirname, 'browser-profile');
 const DEBUG_DIR = join(__dirname, 'debug');
 const HEADLESS = process.env.HEADLESS === '1';
@@ -82,6 +83,27 @@ async function dump(page, name) {
 
 function today() {
     return new Date().toISOString().slice(0, 10);
+}
+
+/**
+ * Ask which property to run for. If a GUI popup (run-reports.bat) already
+ * supplied PROPERTY, or this is a non-interactive scheduled run, skip the
+ * console prompt. Empty answer => All Properties (consolidated).
+ */
+async function promptProperty() {
+    if (PROPERTY) return; // already provided (popup / env var)
+    if (!process.stdin.isTTY) return; // scheduled / non-interactive
+    const rl = createInterface({ input: process.stdin, output: process.stdout });
+    const answer = await rl.question(
+        'Property to run reports for (press Enter for ALL properties): ',
+    );
+    rl.close();
+    PROPERTY = answer.trim();
+}
+
+/** Human-friendly + filesystem-safe label for the chosen scope. */
+function propertyLabel() {
+    return PROPERTY || 'All Properties';
 }
 
 // --- Report parameter setters (best-effort) --------------------------------
@@ -147,7 +169,7 @@ async function exportReport(page, report) {
     await dump(page, `${report.key}-01-form`);
 
     await setBasis(page, report.basis);
-    await setProperty(page, PROPERTY);
+    await setProperty(page, propertyLabel());
     if (report.dateMode === 'as_of') await setAsOf(page);
     else await setAllTimeRange(page);
 
@@ -164,7 +186,8 @@ async function exportReport(page, report) {
     await page.locator('a:has-text("PDF"), button:has-text("PDF"), [data-format="pdf"]').first().click();
     const download = await downloadPromise;
 
-    const fileName = `${today()}_${report.label.replace(/\s+/g, '_')}.pdf`;
+    const propTag = propertyLabel().replace(/[^\w]+/g, '_');
+    const fileName = `${today()}_${propTag}_${report.label.replace(/\s+/g, '_')}.pdf`;
     const dest = join(REPORT_DIR, fileName);
     await download.saveAs(dest);
     console.log(`  saved → ${dest}`);
@@ -203,6 +226,9 @@ async function main() {
             console.log('Session expired — log in (and complete MFA) in the window. Waiting...');
             await page.waitForSelector(LOGGED_IN_SELECTOR, { timeout: 5 * 60_000 });
         }
+
+        await promptProperty();
+        console.log(`\nRunning reports for: ${propertyLabel()}\n`);
 
         let ok = 0;
         for (const report of REPORTS) {

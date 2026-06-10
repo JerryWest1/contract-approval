@@ -33,12 +33,24 @@ own machine/IP so MFA is only needed about once a month.
 
 ## Normal run
 
-```
-node download-reports.js
-```
+Double-click **`run-reports.bat`**. A small popup asks **which property** to run
+for — type the property name exactly as it appears in AppFolio, or leave it
+blank for **All Properties** (consolidated). Then it downloads all three reports
+for that property and hits the inbox.
 
-The three PDFs are written to `G:\Shared drives\LIGHTHOUSE\CFO Report Inbox`
-named like `2026-06-10_Balance_Sheet.pdf`.
+To run a different property, just run it again and type a different name.
+
+PDFs are written to `G:\Shared drives\LIGHTHOUSE\CFO Report Inbox`, named with
+the date, property, and report, e.g.:
+```
+2026-06-10_Maple_Apartments_Balance_Sheet.pdf
+2026-06-10_Maple_Apartments_Income_Statement.pdf
+2026-06-10_Maple_Apartments_General_Ledger.pdf
+```
+(so different properties never overwrite each other.)
+
+Prefer the command line? `node download-reports.js` prompts for the property in
+the terminal instead.
 
 ## Monthly MFA
 
@@ -52,6 +64,7 @@ session.
 | --- | --- | --- |
 | `APPFOLIO_URL` | `https://westmarq.appfolio.com` | Portal URL |
 | `REPORT_DIR` | `G:\Shared drives\LIGHTHOUSE\CFO Report Inbox` | Where PDFs are saved |
+| `PROPERTY` | _(popup asks)_ | Property name; blank = All Properties |
 | `HEADLESS` | _(off)_ | `1` = no visible window (only after login is saved) |
 | `DEBUG` | _(off)_ | `1` = save screenshots + HTML to `./debug` each step |
 
