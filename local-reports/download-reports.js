@@ -158,7 +158,10 @@ async function setProperty(page, property) {
 
 async function openExportMenu(page) {
     const menu = page
-        .locator('button:has-text("Export"), button:has-text("Download"), [aria-label="Export"]')
+        .locator(
+            'button:has-text("Export"), button:has-text("Download"), button:has-text("Actions"), ' +
+            '[aria-label="Export"], [aria-label*="Print"], [title*="Print"]',
+        )
         .first();
     if (await menu.isVisible().catch(() => false)) await menu.click().catch(() => {});
 }
@@ -183,41 +186,87 @@ async function exportReport(page, report) {
     await page.waitForTimeout(3000);
     await dump(page, `${report.key}-02-rendered`);
 
-    // Guard the download promise so a timeout can never crash the whole run.
-    let downloadErr = null;
-    const downloadPromise = page
-        .waitForEvent('download', { timeout: 60_000 })
-        .catch((e) => {
-            downloadErr = e;
-            return null;
-        });
+    // "Print to PDF" either downloads a file or opens the PDF in a new tab —
+    // listen for both, guarded so a timeout can never crash the whole run.
+    const downloadPromise = page.waitForEvent('download', { timeout: 60_000 }).catch(() => null);
+    const popupPromise = page.waitForEvent('popup', { timeout: 60_000 }).catch(() => null);
+
     await openExportMenu(page);
     await page
-        .locator('a:has-text("PDF"), button:has-text("PDF"), [data-format="pdf"]')
+        .locator(
+            'a:has-text("Print to PDF"), button:has-text("Print to PDF"), ' +
+            'a:has-text("PDF"), button:has-text("PDF"), [data-format="pdf"]',
+        )
         .first()
         .click({ timeout: 15_000 });
-    const download = await downloadPromise;
-    if (!download) throw downloadErr || new Error('No download started.');
 
     const propTag = propertyLabel().replace(/[^\w]+/g, '_');
     const fileName = `${today()}_${propTag}_${report.label.replace(/\s+/g, '_')}.pdf`;
     const dest = join(REPORT_DIR, fileName);
-    await download.saveAs(dest);
+
+    const result = await Promise.race([
+        downloadPromise.then((d) => d && { kind: 'download', d }),
+        popupPromise.then((p) => p && { kind: 'popup', p }),
+    ]);
+    if (!result) throw new Error('Print to PDF produced neither a download nor a new tab within 60s.');
+
+    if (result.kind === 'download') {
+        await result.d.saveAs(dest);
+    } else {
+        // PDF opened in a new tab — wait for its final URL, then fetch the
+        // bytes with the logged-in session's cookies and save them.
+        const popup = result.p;
+        await popup.waitForLoadState('domcontentloaded').catch(() => {});
+        // Some flows redirect to a generated file; give it a moment.
+        await popup.waitForTimeout(2000);
+        const pdfUrl = popup.url();
+        const resp = await page.request.get(pdfUrl);
+        if (!resp.ok()) throw new Error(`Could not fetch PDF (${resp.status()}) from ${pdfUrl}`);
+        await writeFile(dest, await resp.body());
+        await popup.close().catch(() => {});
+    }
     console.log(`  saved → ${dest}`);
 }
 
 // --- Main -------------------------------------------------------------------
-async function main() {
-    await mkdir(REPORT_DIR, { recursive: true }).catch(() => {});
 
-    // login mode forces a visible window; run mode honors HEADLESS.
-    const headless = MODE === 'login' ? false : HEADLESS;
+/**
+ * Get a browser context. Two modes:
+ *  - Default: the script's own persistent profile (browser-profile/).
+ *  - USE_CHROME=1: attach to YOUR running Chrome via CDP (port 9222), reusing
+ *    whatever AppFolio session is already logged in there. Chrome must have
+ *    been started with start-chrome-debug.bat for this to work.
+ */
+async function getContext(headless) {
+    if (process.env.USE_CHROME === '1') {
+        try {
+            const browser = await chromium.connectOverCDP('http://localhost:9222');
+            const context = browser.contexts()[0];
+            if (!context) throw new Error('Chrome is running but has no open window.');
+            console.log('Attached to your existing Chrome session.');
+            return { context, attached: true };
+        } catch (e) {
+            throw new Error(
+                'Could not attach to Chrome. Start Chrome with start-chrome-debug.bat ' +
+                `first, then re-run. (${e.message})`,
+            );
+        }
+    }
     const context = await chromium.launchPersistentContext(PROFILE_DIR, {
         headless,
         acceptDownloads: true,
         viewport: { width: 1400, height: 1000 },
     });
-    const page = context.pages()[0] || (await context.newPage());
+    return { context, attached: false };
+}
+
+async function main() {
+    await mkdir(REPORT_DIR, { recursive: true }).catch(() => {});
+
+    // login mode forces a visible window; run mode honors HEADLESS.
+    const headless = MODE === 'login' ? false : HEADLESS;
+    const { context, attached } = await getContext(headless);
+    const page = await context.newPage();
 
     try {
         await page.goto(BASE_URL, { waitUntil: 'domcontentloaded' });
@@ -254,7 +303,14 @@ async function main() {
         }
         console.log(`\nDone. ${ok}/${REPORTS.length} reports saved to ${REPORT_DIR}`);
     } finally {
-        await context.close();
+        if (attached) {
+            // Attached to the user's own Chrome — close only our tab, never
+            // their browser.
+            await page.close().catch(() => {});
+            await context.browser()?.close().catch(() => {});
+        } else {
+            await context.close();
+        }
     }
 }
 
