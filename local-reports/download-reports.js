@@ -58,9 +58,9 @@ const REPORTS = [
  * be confirmed and corrected.
  */
 const REPORT_PATHS = {
-    balance_sheet: '/accounting/financials/balance_sheet',
-    income_statement: '/accounting/financials/income_statement',
-    general_ledger: '/accounting/financials/general_ledger',
+    balance_sheet: '/buffered_reports/balance_sheet?customize=true',
+    income_statement: '/buffered_reports/income_statement_date_range?customize=true',
+    general_ledger: '/buffered_reports/general_ledger?customize=true',
 };
 
 const LOGGED_IN_SELECTOR = 'nav, [data-testid="primary-nav"], .navbar';
@@ -174,17 +174,30 @@ async function exportReport(page, report) {
     else await setAllTimeRange(page);
 
     await page
-        .locator('button:has-text("Run"), button:has-text("Refresh"), input[value*="Run"]')
+        .locator('button:has-text("Run Report"), button:has-text("Run"), button:has-text("Refresh"), input[value*="Run"]')
         .first()
         .click()
         .catch(() => {});
+    // Buffered reports generate server-side; give the report time to render.
     await page.waitForLoadState('networkidle').catch(() => {});
+    await page.waitForTimeout(3000);
     await dump(page, `${report.key}-02-rendered`);
 
-    const downloadPromise = page.waitForEvent('download', { timeout: 60_000 });
+    // Guard the download promise so a timeout can never crash the whole run.
+    let downloadErr = null;
+    const downloadPromise = page
+        .waitForEvent('download', { timeout: 60_000 })
+        .catch((e) => {
+            downloadErr = e;
+            return null;
+        });
     await openExportMenu(page);
-    await page.locator('a:has-text("PDF"), button:has-text("PDF"), [data-format="pdf"]').first().click();
+    await page
+        .locator('a:has-text("PDF"), button:has-text("PDF"), [data-format="pdf"]')
+        .first()
+        .click({ timeout: 15_000 });
     const download = await downloadPromise;
+    if (!download) throw downloadErr || new Error('No download started.');
 
     const propTag = propertyLabel().replace(/[^\w]+/g, '_');
     const fileName = `${today()}_${propTag}_${report.label.replace(/\s+/g, '_')}.pdf`;
