@@ -106,122 +106,143 @@ function propertyLabel() {
     return PROPERTY || 'All Properties';
 }
 
-// --- Report parameter setters (best-effort) --------------------------------
-async function setBasis(page, basis) {
-    if (!basis) return;
-    const radio = page.locator(`label:has-text("${basis}") input, input[value="${basis}"]`).first();
-    if (await radio.isVisible().catch(() => false)) return radio.check();
-    const select = page.locator('select[name*="basis"], select[name*="accounting"]').first();
-    if (await select.isVisible().catch(() => false)) await select.selectOption({ label: basis }).catch(() => {});
-}
-
-async function setAsOf(page) {
-    const field = page.locator('input[name*="as_of"], input[name*="to_date"], input[type="date"]').first();
-    if (await field.isVisible().catch(() => false)) await field.fill(today());
-}
-
-async function setAllTimeRange(page) {
-    const from = page.locator('input[name*="from"], input[name*="start"]').first();
-    const to = page.locator('input[name*="to"], input[name*="end"]').first();
-    if (await from.isVisible().catch(() => false)) await from.fill('2000-01-01');
-    if (await to.isVisible().catch(() => false)) await to.fill(today());
-}
-
-/**
- * Select the property / portfolio scope on the report form (best-effort).
- * AppFolio usually exposes this as a searchable dropdown or multi-select.
- * "All Properties" means leave it at / choose the consolidated option.
- */
-async function setProperty(page, property) {
-    if (!property) return;
-    const selectors = [
-        'select[name*="propert"]',
-        'select[name*="portfolio"]',
-        '[aria-label*="Propert"]',
-        '[placeholder*="Propert"]',
-    ];
-    for (const sel of selectors) {
-        const el = page.locator(sel).first();
-        if (!(await el.isVisible().catch(() => false))) continue;
-        // Native <select>: pick by visible label.
-        if ((await el.evaluate((n) => n.tagName).catch(() => '')) === 'SELECT') {
-            await el.selectOption({ label: property }).catch(() => {});
-            return;
-        }
-        // Searchable combobox: type and pick the matching option.
-        await el.click().catch(() => {});
-        await page.keyboard.type(property).catch(() => {});
-        await page.locator(`text="${property}"`).first().click().catch(() => {});
-        return;
+// --- Report parameter setters --------------------------------
+/** Fill a date field robustly whether it's <input type=date> (ISO) or text (US). */
+async function fillDate(input, isoDate) {
+    const type = await input.getAttribute('type').catch(() => 'text');
+    await input.click().catch(() => {});
+    if (type === 'date') {
+        await input.fill(isoDate); // type=date wants YYYY-MM-DD
+    } else {
+        const [y, m, d] = isoDate.split('-');
+        await input.fill(`${m}/${d}/${y}`); // text wants MM/DD/YYYY
     }
 }
 
-async function openExportMenu(page) {
-    const menu = page
-        .locator(
-            'button:has-text("Export"), button:has-text("Download"), button:has-text("Actions"), ' +
-            '[aria-label="Export"], [aria-label*="Print"], [title*="Print"]',
-        )
+/** Set the Accounting Basis dropdown to Accrual (the select that has that option). */
+async function setBasis(modal, basis) {
+    if (!basis) return;
+    const select = modal
+        .locator('select')
+        .filter({ has: modal.locator(`option:text-is("${basis}")`) })
         .first();
-    if (await menu.isVisible().catch(() => false)) await menu.click().catch(() => {});
+    if (await select.count()) await select.selectOption({ label: basis }).catch(() => {});
+}
+
+/** Choose the property scope. Blank / "All Properties" => leave empty (consolidated). */
+async function setProperty(modal, page, property) {
+    if (!property || /^all properties$/i.test(property)) return;
+    const search = modal.getByPlaceholder(/Search by property/i).first();
+    if (!(await search.count())) return;
+    await search.click();
+    await search.fill(property);
+    await page.waitForTimeout(800);
+    await page
+        .locator('.dropdown-menu, [role="listbox"], li, .Select-option')
+        .getByText(property, { exact: false })
+        .first()
+        .click()
+        .catch(() => {});
+}
+
+/**
+ * Fill the Customize Report popup for one report, then leave it for the caller
+ * to click Update. Uses only enabled date inputs so checkboxes / disabled
+ * preset fields are never touched.
+ */
+async function customizeReport(modal, page, report) {
+    await setProperty(modal, page, propertyLabel());
+    await setBasis(modal, report.basis);
+
+    const dates = modal.locator('input[type="date"]:not([disabled]), input.date-input:not([disabled])');
+    const enabled = [];
+    for (let i = 0; i < (await dates.count()); i++) {
+        const el = dates.nth(i);
+        if (await el.isVisible().catch(() => false)) enabled.push(el);
+    }
+
+    if (report.key === 'balance_sheet') {
+        // As of = today.
+        if (enabled[0]) await fillDate(enabled[0], today());
+    } else {
+        // Income Statement + General Ledger: date range = all time.
+        if (enabled[0]) await fillDate(enabled[0], '2000-01-01');
+        if (enabled[1]) await fillDate(enabled[1], today());
+    }
+
+    if (report.key === 'general_ledger') {
+        // Select ALL GL accounts via the "Select: All" link.
+        await modal
+            .locator('a, button, span')
+            .filter({ hasText: /^All$/ })
+            .first()
+            .click()
+            .catch(() => {});
+    }
+}
+
+async function clickUpdate(modal) {
+    await modal
+        .getByRole('button', { name: /^(update|run report|run)$/i })
+        .first()
+        .click()
+        .catch(() => {});
 }
 
 async function exportReport(page, report) {
     console.log(`- ${report.label}...`);
     await page.goto(BASE_URL + REPORT_PATHS[report.key], { waitUntil: 'domcontentloaded' });
+
+    // The ?customize=true URL opens the "Customize Report" popup.
+    const modal = page.locator('.modal.show, [role="dialog"][aria-modal="true"]').first();
+    await modal.waitFor({ state: 'visible', timeout: 30_000 }).catch(() => {});
     await dump(page, `${report.key}-01-form`);
 
-    await setBasis(page, report.basis);
-    await setProperty(page, propertyLabel());
-    if (report.dateMode === 'as_of') await setAsOf(page);
-    else await setAllTimeRange(page);
+    await customizeReport(modal, page, report).catch((e) =>
+        console.log(`  customize note: ${e.message}`),
+    );
 
-    await page
-        .locator('button:has-text("Run Report"), button:has-text("Run"), button:has-text("Refresh"), input[value*="Run"]')
-        .first()
-        .click()
-        .catch(() => {});
-    // Buffered reports generate server-side; give the report time to render.
+    // Apply settings + CLOSE the popup (otherwise it blocks Print to PDF).
+    await clickUpdate(modal);
+    await modal.waitFor({ state: 'hidden', timeout: 60_000 }).catch(() => {});
     await page.waitForLoadState('networkidle').catch(() => {});
     await page.waitForTimeout(3000);
     await dump(page, `${report.key}-02-rendered`);
-
-    // "Print to PDF" either downloads a file or opens the PDF in a new tab —
-    // listen for both, guarded so a timeout can never crash the whole run.
-    const downloadPromise = page.waitForEvent('download', { timeout: 60_000 }).catch(() => null);
-    const popupPromise = page.waitForEvent('popup', { timeout: 60_000 }).catch(() => null);
-
-    await openExportMenu(page);
-    await page
-        .locator(
-            'a:has-text("Print to PDF"), button:has-text("Print to PDF"), ' +
-            'a:has-text("PDF"), button:has-text("PDF"), [data-format="pdf"]',
-        )
-        .first()
-        .click({ timeout: 15_000 });
 
     const propTag = propertyLabel().replace(/[^\w]+/g, '_');
     const fileName = `${today()}_${propTag}_${report.label.replace(/\s+/g, '_')}.pdf`;
     const dest = join(REPORT_DIR, fileName);
 
+    // "Print to PDF" is a dropdown button; open it then pick the PDF option.
+    const downloadPromise = page.waitForEvent('download', { timeout: 90_000 }).catch(() => null);
+    const popupPromise = page.waitForEvent('popup', { timeout: 90_000 }).catch(() => null);
+
+    await page
+        .locator('.js-print-to-pdf-dropdown, button:has-text("Print to PDF")')
+        .first()
+        .click({ timeout: 15_000 });
+    // If a menu opened, click a PDF item inside it.
+    const menuItem = page
+        .locator('.dropdown-menu a, .dropdown-menu button, [role="menu"] a, [role="menuitem"]')
+        .filter({ hasText: /pdf/i })
+        .first();
+    if (await menuItem.isVisible().catch(() => false)) await menuItem.click().catch(() => {});
+    await dump(page, `${report.key}-03-after-print-click`);
+
     const result = await Promise.race([
         downloadPromise.then((d) => d && { kind: 'download', d }),
         popupPromise.then((p) => p && { kind: 'popup', p }),
     ]);
-    if (!result) throw new Error('Print to PDF produced neither a download nor a new tab within 60s.');
+    if (!result) throw new Error('Print to PDF produced neither a download nor a new tab within 90s.');
 
     if (result.kind === 'download') {
         await result.d.saveAs(dest);
     } else {
-        // PDF opened in a new tab — wait for its final URL, then fetch the
-        // bytes with the logged-in session's cookies and save them.
         const popup = result.p;
         await popup.waitForLoadState('domcontentloaded').catch(() => {});
-        // Some flows redirect to a generated file; give it a moment.
         await popup.waitForTimeout(2000);
-        const pdfUrl = popup.url();
-        const resp = await page.request.get(pdfUrl);
-        if (!resp.ok()) throw new Error(`Could not fetch PDF (${resp.status()}) from ${pdfUrl}`);
+        const resp = await page.request.get(popup.url());
+        if (!resp.ok()) throw new Error(`Could not fetch PDF (${resp.status()}) from ${popup.url()}`);
         await writeFile(dest, await resp.body());
         await popup.close().catch(() => {});
     }
