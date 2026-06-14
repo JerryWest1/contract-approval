@@ -18,3 +18,9 @@ logs/*
 !inbox/.gitkeep
 !outputs/.gitkeep
 !logs/.gitkeep
+
+# Stage 2 — keys and fetched photos stay local
+stage2/comps/config_stage2.json
+**/.photos/
+**/comps.json
+**/*Comp Analysis*.pdf

@@ -1,0 +1,9 @@
+{
+  "radius_miles": 2,
+  "sold_within_days": 90,
+  "comps_per_source": 3,
+  "selling_cost_pct": 0.06,
+  "rapidapi_zillow_host": "zillow-com1.p.rapidapi.com",
+  "rapidapi_key": "PUT-YOUR-RAPIDAPI-KEY-HERE-or-set-RAPIDAPI_KEY-env",
+  "google_maps_key": "PUT-YOUR-GOOGLE-MAPS-KEY-HERE-or-set-GOOGLE_MAPS_KEY-env"
+}
