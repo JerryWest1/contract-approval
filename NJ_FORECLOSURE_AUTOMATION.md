@@ -76,7 +76,7 @@ Or parse inline if reading the CSV directly into memory.
 
 ```bash
 python3 .claude/skills/nj-foreclosure-audit/scripts/build_email.py \
-  /tmp/nj_flags.json "<filename>" "<total_rows>" > /tmp/nj_email.html
+  /tmp/nj_flags.json "<filename>" "<total_rows>" "<google_drive_file_id>" > /tmp/nj_email.html
 ```
 
 ### Step 5 — Send the report

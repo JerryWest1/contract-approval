@@ -1,16 +1,31 @@
 #!/usr/bin/env python3
 """
 Build an HTML email body for the NJ Foreclosure Audit report.
-Usage: python3 build_email.py <flags_json> <filename> <total_rows>
+Usage: python3 build_email.py <flags_json> <filename> <total_rows> [file_id]
 """
 
 import json
 import sys
+from urllib.parse import urlencode, quote
 from datetime import date
 
 flags_file = sys.argv[1]
 filename = sys.argv[2] if len(sys.argv) > 2 else "unknown"
 total_rows = sys.argv[3] if len(sys.argv) > 3 else "?"
+file_id    = sys.argv[4] if len(sys.argv) > 4 else ""
+
+N8N_WEBHOOK = "https://n8n.srv958565.hstgr.cloud/webhook/nj-audit-confirm"
+
+def confirm_url(r):
+    params = {
+        "file_id":  file_id,
+        "docket":   r.get("docket", ""),
+        "type":     r.get("suggested_type", ""),
+        "row":      str(r.get("row", "")),
+        "plaintiff": r.get("plaintiff", ""),
+        "attorney": r.get("attorney", ""),
+    }
+    return f"{N8N_WEBHOOK}?{urlencode(params)}"
 
 with open(flags_file) as f:
     data = json.load(f)
@@ -32,6 +47,15 @@ for r in flagged:
     flag_label = r.get("flag", "")
     stype = r.get("suggested_type", "")
     stype_color = {"Tax": "#1565c0", "Condo": "#6a1b9a", "Mortgage": "#2e7d32"}.get(stype, "#333")
+    confirm_btn = ""
+    if file_id and r.get("suggested_type"):
+        url = confirm_url(r)
+        btn_color = {"Tax": "#1565c0", "Condo": "#6a1b9a", "Mortgage": "#2e7d32"}.get(stype, "#555")
+        confirm_btn = (
+            f'<a href="{url}" style="display:inline-block;margin-top:4px;padding:4px 10px;'
+            f'background:{btn_color};color:white;border-radius:3px;font-size:11px;'
+            f'text-decoration:none;font-weight:bold;">✓ Confirm {stype}</a>'
+        )
     rows_html += f"""
     <tr>
       <td style="padding:6px 8px;border-bottom:1px solid #eee;color:#555;">{r.get('row','')}</td>
@@ -42,6 +66,7 @@ for r in flagged:
       <td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:bold;color:{stype_color};">{stype}</td>
       <td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#555;">{r.get('reason','')}</td>
       <td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:11px;font-weight:bold;color:{flag_color};">{flag_label}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eee;">{confirm_btn}</td>
     </tr>"""
 
 if not flagged:
@@ -99,6 +124,7 @@ html = f"""<!DOCTYPE html>
         <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Suggested</th>
         <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Reason</th>
         <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Issue</th>
+        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Action</th>
       </tr>
     </thead>
     <tbody>{rows_html}</tbody>
