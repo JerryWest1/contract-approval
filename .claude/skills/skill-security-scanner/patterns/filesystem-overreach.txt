@@ -1,0 +1,35 @@
+# Filesystem overreach: destructive deletes, broad scans of the whole disk,
+# path traversal, and other "this skill is doing way more than its job" signals.
+# PCRE2 (ripgrep -P). One regex per line.
+
+# Catastrophic deletes
+\brm\s+-rf?\s+(--no-preserve-root\s+)?/(?!\S)
+\brm\s+-rf?\s+~(?!\S)
+\brm\s+-rf?\s+\$HOME(?!\S)
+\brm\s+-rf?\s+\$\{?HOME\}?(?!\S)
+\brm\s+-rf?\s+\*(?!\S)
+\brm\s+-rf?\s+\.(?!\S)
+\brm\s+-rf?\s+/\*
+
+# Whole-disk scans (used to find secrets/files to exfiltrate)
+\bfind\s+/(\s|\b)
+\bfind\s+~\s+-name\b
+\bgrep\s+-r[a-zA-Z]*\s+/(\s|\b)
+\bripgrep\s+-uu\s+/(\s|\b)
+\brg\s+.{0,40}?\s+/(\s|\b)
+
+# Path traversal
+(\.\./){3,}
+\$\{?HOME\}?/\.\.
+
+# fork bomb / DoS
+:\(\)\s*\{\s*:\|\s*:\s*&\s*\}
+\bdd\s+if=/dev/(zero|urandom)\s+of=
+
+# Dangerous mounts / device writes
+\bmount\b
+\bumount\b
+>\s*/dev/(sda|nvme|disk|null|tcp/)
+
+# chown/chmod on broad paths
+\b(chmod|chown)\s+-R\s+(\d{3,4}|[ugo+a]+)\s+(/|~|\$HOME)(\s|$)

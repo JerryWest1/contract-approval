@@ -1,0 +1,29 @@
+# Remote code execution: pulling code from the network and running it.
+# PCRE2 (ripgrep -P). One regex per line.
+
+# Classic curl|sh / wget|sh
+\b(curl|wget|fetch)\b[^|]{0,300}?\|\s*(sh|bash|zsh|dash|ksh|/bin/sh|/bin/bash)\b
+
+# eval $(curl ...) or similar command substitution
+\beval\s*\(?\s*"?\$\(\s*(curl|wget|fetch)\b
+\bbash\s+-c\s+"?\$\(\s*(curl|wget|fetch)\b
+
+# Python one-liner: urlopen + exec/eval
+python\s*-c\s+['"][^'"]{0,500}?(urlopen|urlretrieve|requests\.get)[^'"]{0,200}?(exec|eval|compile)
+
+# Shell exec via base64 over network
+\b(curl|wget)\b[^|]{0,300}?\|\s*base64\s+-d\s*\|\s*(sh|bash|zsh)
+
+# pip / pipx installing from a URL or git+
+\b(pip3?|pipx|uv\s+pip)\s+install\b[^\n]{0,300}?(git\+|https?://|file://|--index-url\s+http)
+
+# npm / yarn / pnpm installing from URL, git+, or local path
+\b(npm\s+i(nstall)?|yarn\s+add|pnpm\s+add)\b[^\n]{0,300}?(git\+|https?://|file:|github:)
+
+# go get / cargo install from URL
+\bgo\s+(get|install)\b[^\n]{0,200}?https?://
+\bcargo\s+install\b[^\n]{0,200}?(--git\s+http|--path\s+/)
+
+# Loading remote code via gem / luarocks / etc.
+\bgem\s+install\b[^\n]{0,200}?(--source\s+http|-r\s+http)
+\bluarocks\s+install\b[^\n]{0,200}?https?://

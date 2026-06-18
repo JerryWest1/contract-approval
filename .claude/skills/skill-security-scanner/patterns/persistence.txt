@@ -1,0 +1,38 @@
+# Persistence and privilege: writes that survive after the skill runs, or
+# that escalate privilege beyond a normal user shell.
+# PCRE2 (ripgrep -P). One regex per line.
+
+# Modifying Claude Code settings or hook config
+~/\.claude/settings(\.local)?\.json
+\$HOME/\.claude/settings(\.local)?\.json
+\.claude/hooks/
+
+# Shell rc files
+~/\.bashrc|~/\.bash_profile|~/\.zshrc|~/\.profile|~/\.config/fish/config\.fish
+
+# Cron / launchd / systemd
+\bcrontab\b\s+(-e|-l|-r|<)
+/etc/cron\.|/var/spool/cron/
+\blaunchctl\b\s+(load|bootstrap|setenv|submit)
+~/Library/LaunchAgents/|/Library/LaunchDaemons/
+\bsystemctl\b\s+(enable|start|--user)
+~/\.config/systemd/user/
+
+# SSH persistence
+~/\.ssh/authorized_keys|~/\.ssh/config
+
+# Privilege escalation
+\bsudo\b
+\bdoas\b
+\bsu\s+-\s+root\b
+\bchmod\s+\+s\b
+\bsetcap\s+cap_
+
+# Adding to PATH or aliases
+\balias\s+[a-zA-Z_][a-zA-Z0-9_]*=
+\bexport\s+PATH=
+
+# Writing to system locations
+\b(cp|mv|tee|cat\s*>)\s+[^\n]{0,200}?\s/etc/
+\b(cp|mv|tee|cat\s*>)\s+[^\n]{0,200}?\s/usr/local/bin/
+\b(cp|mv|tee|cat\s*>)\s+[^\n]{0,200}?\s/usr/bin/
