@@ -16,7 +16,9 @@ folder inside the **LIGHTHOUSE** shared drive:
    e.g. `05-29 06-05`).
 2. Pick the subfolder modified most recently.
 3. Find the CSV file inside it (e.g. `05-29 06-05-.csv`).
-4. Download its content.
+4. **Record the file's Google Drive file ID** (the `id` field returned by the Drive API).
+   You MUST save this exact ID — it is required in Step 4 to generate the review button.
+5. Download its content.
 
 ### Step 2 — Parse and flag
 
@@ -74,9 +76,18 @@ Or parse inline if reading the CSV directly into memory.
 
 ### Step 4 — Build the HTML email
 
+Replace `<google_drive_file_id>` with the actual Drive file ID captured in Step 1.
+This is critical — without it, the "Review & Confirm" button will NOT appear in the email.
+
 ```bash
 python3 .claude/skills/nj-foreclosure-audit/scripts/build_email.py \
   /tmp/nj_flags.json "<filename>" "<total_rows>" "<google_drive_file_id>" > /tmp/nj_email.html
+```
+
+Example (if the file ID were `1aBcD2eFgH`):
+```bash
+python3 .claude/skills/nj-foreclosure-audit/scripts/build_email.py \
+  /tmp/nj_flags.json "06-16 06-22-.csv" "312" "1aBcD2eFgH" > /tmp/nj_email.html
 ```
 
 ### Step 5 — Send the report
