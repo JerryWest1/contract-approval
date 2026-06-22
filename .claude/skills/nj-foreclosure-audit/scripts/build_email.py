@@ -40,12 +40,25 @@ if file_id and flagged:
   <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
     <tr>
       <td align="center">
+        <!--[if mso]>
+        <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word"
+          href="{review_url}"
+          style="height:48px;v-text-anchor:middle;width:300px;" arcsize="8%"
+          stroke="f" fillcolor="#1a237e">
+          <w:anchorlock/>
+          <center style="color:#ffffff;font-family:Arial,sans-serif;font-size:16px;font-weight:bold;">
+            &#10003; Review &amp; Confirm Flagged Rows
+          </center>
+        </v:roundrect>
+        <![endif]-->
+        <!--[if !mso]><!-->
         <a href="{review_url}"
            style="display:inline-block;padding:14px 36px;background:#1a237e;color:#ffffff;
                   font-size:16px;font-weight:bold;border-radius:5px;text-decoration:none;
-                  font-family:Arial,sans-serif;mso-padding-alt:14px 36px;">
+                  font-family:Arial,sans-serif;">
           &#10003; Review &amp; Confirm Flagged Rows
         </a>
+        <!--<![endif]-->
         <p style="margin:8px 0 0;font-size:12px;color:#888888;font-family:Arial,sans-serif;">
           Opens a page where you can uncheck any rows you disagree with before confirming.
           CSV in Google Drive and Invelo will be updated for all confirmed rows.
