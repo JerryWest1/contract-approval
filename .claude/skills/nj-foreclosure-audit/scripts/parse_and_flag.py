@@ -2,7 +2,7 @@
 """
 Parse NJ foreclosure CSV and apply rule-based categorization flags.
 Usage: python3 parse_and_flag.py <csv_file>
-Outputs JSON array of all rows with a 'flag' field for suspicious ones.
+Outputs JSON with total row count and array of flagged rows.
 """
 
 import csv
@@ -10,37 +10,43 @@ import json
 import sys
 import re
 
+# Each entry is a phrase; all significant words (len>4) must appear in the
+# attorney name for it to match. Single-word entries match on that word alone.
 TAX_ATTORNEYS = [
     # Pellegrino & Feldstein
     "pellegrino and feldstein",
-    "pellegrino feldstein",
+    "pellegrino",
+    "feldstein",
     # Gary Zeitz
-    "gary c. zeitz",
     "gary zeitz",
     "zeitz",
     # Boudwin Ross Roy Leodori
-    "boudwin ross roy leodori",
-    "boudwin ross",
+    "boudwin ross leodori",
+    "boudwin",
+    "leodori",
     # Taylor & Keyser
     "taylor and keyser",
-    "taylor keyser",
-    # Honig & Greenberg
+    "keyser",
+    # Honig & Greenberg — "greenberg" alone is NOT a tax indicator
     "honig and greenberg",
     "honig greenberg",
-    # Robert Del Vecchio — confirmed missing; multiple spellings in use
-    "robert a. delvecchio",
+    "honig",
+    # Robert Del Vecchio
     "robert delvecchio",
     "delvecchio",
     "del vecchio",
-    # Goldenberg Mackler — Keith Bonchi files under personal name, bypassing firm lookup
-    "goldenberg, mackler, sayegh",
-    "goldenberg mackler",
+    # Goldenberg Mackler Sayegh
+    "goldenberg mackler sayegh",
+    "goldenberg",
+    "mackler",
+    "sayegh",
+    # Keith Bonchi (files under personal name, same firm as Goldenberg Mackler)
     "keith bonchi",
     "bonchi",
     # Lamb McErlane
     "lamb mcerlane",
-    # Anthony Velasquez — confirmed misspellings appearing in scraped data
-    "anthony l. velasquez",
+    "mcerlane",
+    # Anthony Velasquez — multiple confirmed misspellings in scraped data
     "anthony velasquez",
     "anthony valesquez",
     "anthony valazquez",
@@ -51,39 +57,61 @@ TAX_ATTORNEYS = [
     "valesuez",
     # Simeone & Raynor
     "simeone and raynor",
-    "simeone raynor",
+    "simeone",
+    "raynor",
     # Lacsina
-    "patrick o. lacsina",
     "patrick lacsina",
     "lacsina",
 ]
 
-CONDO_KEYWORDS = ["association", "hoa", "condo", "homeowners", "home owners", "community corporation"]
-BANK_EXCLUSIONS = ["bank", "trust", "national assoc", "savings", "mortgage", "loan", "financial",
-                   "credit union", "fund", "llc", "corp", "fbo", "capital", "servic"]
+CONDO_KEYWORDS = [
+    "association", "assoc", "asso", "hoa", "condo",
+    "homeowners", "home owners", "community corporation",
+]
+
+# Plaintiffs containing any of these are financial entities, NOT condos —
+# even if they also contain a condo keyword (e.g. "National Association" in a bank name)
+BANK_EXCLUSIONS = [
+    "bank", "trust", "national assoc", "national asso", "savings",
+    "mortgage", "loan", "financial", "credit union", "fund",
+    "llc", "corp", "fbo", "capital", "servic",
+    "fifth third", "first", "federal",
+]
+
+# Plaintiff keywords that strongly suggest a financial/mortgage lender —
+# if type=Tax but plaintiff is clearly a financial entity and attorney is not
+# a known tax firm, flag as MISMATCH.
+FINANCIAL_PLAINTIFF_KEYWORDS = [
+    "capital", "fund", "mortgage", "lending", "investment", "asset",
+    "reit", "holdings", "partners", "ventures",
+]
 
 
 def normalize(s):
-    """Lowercase, strip punctuation for fuzzy matching."""
     return re.sub(r"[^a-z0-9 ]", " ", (s or "").lower()).strip()
 
 
 def fuzzy_match_tax(attorney):
+    """Return the matched pattern string if this attorney is a known Tax firm, else None.
+    All significant words (len>4) in a pattern must appear in the attorney name.
+    This prevents 'Greenberg' alone from matching 'Honig Greenberg'.
+    """
     n = normalize(attorney)
     n_words = set(n.split())
     for pattern in TAX_ATTORNEYS:
-        # Require significant words to match as whole words (not substrings)
         sig_words = [w for w in pattern.split() if len(w) > 4]
-        if sig_words and any(w in n_words for w in sig_words):
+        if sig_words and all(w in n_words for w in sig_words):
             return pattern
     return None
 
 
 def is_condo_plaintiff(plaintiff):
+    """Return True if plaintiff looks like a real condo/HOA entity."""
     n = normalize(plaintiff)
     if not any(kw in n for kw in CONDO_KEYWORDS):
         return False
-    # Don't flag banks/financial entities that happen to contain "association"
+    # Financial entities containing 'association' (e.g. 'Fifth Third National Asso')
+    # are banks, not condos.
     if any(ex in n for ex in BANK_EXCLUSIONS):
         return False
     return True
@@ -95,49 +123,67 @@ def main():
     rows = []
     with open(csv_file, newline="", encoding="utf-8-sig") as f:
         reader = csv.reader(f)
-        headers = next(reader, None)
+        next(reader, None)  # skip header
         for i, row in enumerate(reader, start=2):
             if not any(row):
                 continue
 
-            # 0-indexed: col 7=Plaintiff, col 8=Attorney, col 12=ForeclosureType
             def get(idx):
                 return row[idx].strip() if idx < len(row) else ""
 
-            plaintiff = get(7)
-            attorney = get(8)
-            current_type = get(12)
-            docket = get(6)
+            # Correct column indices (0-based):
+            # 6=Docket, 8=Plaintiff, 10=Attorney, 13=ForeclosureType
+            docket       = get(6)
+            plaintiff    = get(8)
+            attorney     = get(10)
+            current_type = get(13)
 
-            flag = None
+            flag      = None
             suggested = None
-            reason = None
+            reason    = None
 
             matched_attorney = fuzzy_match_tax(attorney)
-            condo = is_condo_plaintiff(plaintiff)
+            condo_plaintiff  = is_condo_plaintiff(plaintiff)
 
             if not current_type:
+                # Uncategorized — suggest what it should be
                 if matched_attorney:
                     suggested = "Tax"
-                    reason = f"Attorney '{attorney}' matches known Tax attorney pattern '{matched_attorney}'"
-                elif condo:
+                    reason = f"Attorney '{attorney}' matches known Tax firm '{matched_attorney}'"
+                elif condo_plaintiff:
                     suggested = "Condo"
-                    reason = f"Plaintiff '{plaintiff}' contains condo/HOA keyword"
+                    reason = f"Plaintiff '{plaintiff}' looks like a condo/HOA"
                 else:
                     suggested = "Mortgage"
-                    reason = "No Tax attorney or Condo keyword found; likely Mortgage"
+                    reason = "No Tax attorney or Condo keyword; likely Mortgage"
                 flag = "UNCATEGORIZED"
             else:
-                # Check for mismatches
                 ct = current_type.lower()
                 if matched_attorney and "tax" not in ct:
+                    # Marked something other than Tax but attorney is a known Tax firm
                     flag = "MISMATCH"
                     suggested = "Tax"
-                    reason = f"Marked '{current_type}' but attorney '{attorney}' matches Tax pattern '{matched_attorney}'"
-                elif condo and "condo" not in ct and "association" not in ct:
+                    reason = (f"Marked '{current_type}' but attorney '{attorney}' "
+                              f"matches Tax firm '{matched_attorney}'")
+                elif "condo" in ct and not condo_plaintiff:
+                    # Marked Condo but plaintiff doesn't look like a real condo/HOA
+                    flag = "MISMATCH"
+                    suggested = "Mortgage"
+                    reason = (f"Marked 'Condo' but plaintiff '{plaintiff}' is not a "
+                              f"condo/HOA entity — likely a financial entity or MTG case")
+                elif condo_plaintiff and "condo" not in ct and "association" not in ct:
+                    # Plaintiff is a condo/HOA but not marked as Condo
                     flag = "MISMATCH"
                     suggested = "Condo"
-                    reason = f"Marked '{current_type}' but plaintiff '{plaintiff}' contains condo/HOA keyword"
+                    reason = f"Plaintiff '{plaintiff}' looks like a condo/HOA but marked '{current_type}'"
+                elif "tax" in ct and not matched_attorney:
+                    # Marked Tax but attorney is not a known tax firm
+                    pn = normalize(plaintiff)
+                    if any(kw in pn for kw in FINANCIAL_PLAINTIFF_KEYWORDS):
+                        flag = "MISMATCH"
+                        suggested = "Mortgage"
+                        reason = (f"Marked 'Tax' but attorney '{attorney}' is not a known Tax firm "
+                                  f"and plaintiff '{plaintiff}' appears to be a financial/mortgage entity")
 
             record = {
                 "row": i,

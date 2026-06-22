@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Build an HTML email body for the NJ Foreclosure Audit report.
+Outlook-compatible: uses table layout, no flexbox/grid.
 Usage: python3 build_email.py <flags_json> <filename> <total_rows> [file_id]
 """
 
@@ -22,115 +23,158 @@ with open(flags_file) as f:
 flagged = data.get("flagged", [])
 total   = data.get("total", total_rows)
 
-uncategorized    = sum(1 for r in flagged if r.get("flag") == "UNCATEGORIZED")
-mismatched       = sum(1 for r in flagged if r.get("flag") == "MISMATCH")
-tax_suggested    = sum(1 for r in flagged if r.get("suggested_type") == "Tax")
-condo_suggested  = sum(1 for r in flagged if r.get("suggested_type") == "Condo")
+uncategorized      = sum(1 for r in flagged if r.get("flag") == "UNCATEGORIZED")
+mismatched         = sum(1 for r in flagged if r.get("flag") == "MISMATCH")
+tax_suggested      = sum(1 for r in flagged if r.get("suggested_type") == "Tax")
+condo_suggested    = sum(1 for r in flagged if r.get("suggested_type") == "Condo")
 mortgage_suggested = sum(1 for r in flagged if r.get("suggested_type") == "Mortgage")
 
 today = date.today().strftime("%B %d, %Y")
 
-# Build the review page URL: encode all flagged rows as base64 JSON
+# Review button — shown when we have a file_id and flagged rows
 review_btn_html = ""
 if file_id and flagged:
     flags_b64 = base64.b64encode(json.dumps(flagged).encode()).decode()
     review_url = f"{N8N_REVIEW}?file_id={file_id}&flags={flags_b64}"
     review_btn_html = f"""
-  <div style="margin:20px 0;text-align:center;">
-    <a href="{review_url}"
-       style="display:inline-block;padding:14px 36px;background:#1a237e;color:white;
-              font-size:16px;font-weight:bold;border-radius:5px;text-decoration:none;">
-      &#10003; Review &amp; Confirm Flagged Rows
-    </a>
-    <p style="margin:8px 0 0;font-size:12px;color:#888;">
-      Opens a page where you can uncheck any rows you disagree with before confirming.
-      CSV in Google Drive and Invelo will be updated for all confirmed rows.
-    </p>
-  </div>"""
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:20px 0;">
+    <tr>
+      <td align="center">
+        <a href="{review_url}"
+           style="display:inline-block;padding:14px 36px;background:#1a237e;color:#ffffff;
+                  font-size:16px;font-weight:bold;border-radius:5px;text-decoration:none;
+                  font-family:Arial,sans-serif;mso-padding-alt:14px 36px;">
+          &#10003; Review &amp; Confirm Flagged Rows
+        </a>
+        <p style="margin:8px 0 0;font-size:12px;color:#888888;font-family:Arial,sans-serif;">
+          Opens a page where you can uncheck any rows you disagree with before confirming.
+          CSV in Google Drive and Invelo will be updated for all confirmed rows.
+        </p>
+      </td>
+    </tr>
+  </table>"""
+elif flagged and not file_id:
+    review_btn_html = """
+  <p style="margin:16px 0;color:#c62828;font-family:Arial,sans-serif;font-size:13px;">
+    <strong>Note:</strong> Review button unavailable — Drive file ID was not captured during this audit run.
+  </p>"""
+
+
+def stat_cell(value, label, color):
+    return f"""<td align="center" style="padding:0 8px 0 0;">
+        <table cellpadding="0" cellspacing="0" border="0"
+               style="background:#ffffff;border:1px solid #dddddd;border-radius:4px;">
+          <tr>
+            <td align="center" style="padding:10px 20px;">
+              <p style="margin:0;font-size:28px;font-weight:bold;color:{color};font-family:Arial,sans-serif;line-height:1.2;">{value}</p>
+              <p style="margin:2px 0 0;font-size:12px;color:#666666;font-family:Arial,sans-serif;">{label}</p>
+            </td>
+          </tr>
+        </table>
+      </td>"""
+
 
 rows_html = ""
 for r in flagged:
     flag_color  = "#d32f2f" if r.get("flag") == "MISMATCH" else "#f57c00"
     flag_label  = r.get("flag", "")
     stype       = r.get("suggested_type", "")
-    stype_color = {"Tax": "#1565c0", "Condo": "#6a1b9a", "Mortgage": "#2e7d32"}.get(stype, "#333")
+    stype_color = {"Tax": "#1565c0", "Condo": "#6a1b9a", "Mortgage": "#2e7d32"}.get(stype, "#333333")
+    current     = r.get("current_type", "") or "<em>blank</em>"
     rows_html += f"""
     <tr>
-      <td style="padding:6px 8px;border-bottom:1px solid #eee;color:#555;">{r.get('row','')}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid #eee;font-family:monospace;font-size:12px;">{r.get('docket','')}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid #eee;">{r.get('plaintiff','')}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid #eee;">{r.get('attorney','')}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid #eee;color:#888;">{r.get('current_type','') or '<em>blank</em>'}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid #eee;font-weight:bold;color:{stype_color};">{stype}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:12px;color:#555;">{r.get('reason','')}</td>
-      <td style="padding:6px 8px;border-bottom:1px solid #eee;font-size:11px;font-weight:bold;color:{flag_color};">{flag_label}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eeeeee;color:#555555;font-family:Arial,sans-serif;font-size:13px;">{r.get('row','')}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eeeeee;font-family:Courier New,monospace;font-size:12px;">{r.get('docket','')}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eeeeee;font-family:Arial,sans-serif;font-size:13px;">{r.get('plaintiff','')}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eeeeee;font-family:Arial,sans-serif;font-size:13px;">{r.get('attorney','')}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eeeeee;color:#888888;font-family:Arial,sans-serif;font-size:13px;">{current}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eeeeee;font-weight:bold;color:{stype_color};font-family:Arial,sans-serif;font-size:13px;">{stype}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eeeeee;font-size:12px;color:#555555;font-family:Arial,sans-serif;">{r.get('reason','')}</td>
+      <td style="padding:6px 8px;border-bottom:1px solid #eeeeee;font-size:11px;font-weight:bold;color:{flag_color};font-family:Arial,sans-serif;">{flag_label}</td>
     </tr>"""
 
 if not flagged:
-    rows_html = '<tr><td colspan="8" style="padding:20px;text-align:center;color:#4caf50;font-weight:bold;">No issues found — all rows look correctly categorized!</td></tr>'
+    rows_html = '<tr><td colspan="8" style="padding:20px;text-align:center;color:#4caf50;font-weight:bold;font-family:Arial,sans-serif;">No issues found — all rows look correctly categorized!</td></tr>'
 
 html = f"""<!DOCTYPE html>
-<html>
-<head><meta charset="utf-8"></head>
-<body style="font-family:Arial,sans-serif;color:#333;max-width:1100px;margin:0 auto;padding:20px;">
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <!--[if mso]>
+  <xml><o:OfficeDocumentSettings><o:AllowPNG/></o:OfficeDocumentSettings></xml>
+  <![endif]-->
+</head>
+<body style="font-family:Arial,sans-serif;color:#333333;margin:0;padding:20px;background:#f9f9f9;">
 
-  <div style="background:#1a237e;color:white;padding:20px 24px;border-radius:6px 6px 0 0;">
-    <h2 style="margin:0;font-size:20px;">NJ Foreclosure Categorization Audit</h2>
-    <p style="margin:6px 0 0;opacity:0.8;font-size:14px;">{filename} &nbsp;|&nbsp; {today}</p>
-  </div>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0"
+         style="max-width:1100px;margin:0 auto;background:#ffffff;">
 
-  <div style="background:#f5f5f5;padding:16px 24px;border:1px solid #ddd;display:flex;gap:24px;flex-wrap:wrap;">
-    <div style="text-align:center;padding:10px 20px;background:white;border-radius:4px;border:1px solid #ddd;">
-      <div style="font-size:28px;font-weight:bold;color:#1a237e;">{total}</div>
-      <div style="font-size:12px;color:#666;margin-top:2px;">Rows Reviewed</div>
-    </div>
-    <div style="text-align:center;padding:10px 20px;background:white;border-radius:4px;border:1px solid #ddd;">
-      <div style="font-size:28px;font-weight:bold;color:#d32f2f;">{len(flagged)}</div>
-      <div style="font-size:12px;color:#666;margin-top:2px;">Total Flagged</div>
-    </div>
-    <div style="text-align:center;padding:10px 20px;background:white;border-radius:4px;border:1px solid #ddd;">
-      <div style="font-size:28px;font-weight:bold;color:#f57c00;">{uncategorized}</div>
-      <div style="font-size:12px;color:#666;margin-top:2px;">Uncategorized</div>
-    </div>
-    <div style="text-align:center;padding:10px 20px;background:white;border-radius:4px;border:1px solid #ddd;">
-      <div style="font-size:28px;font-weight:bold;color:#d32f2f;">{mismatched}</div>
-      <div style="font-size:12px;color:#666;margin-top:2px;">Mismatched</div>
-    </div>
-    <div style="text-align:center;padding:10px 20px;background:white;border-radius:4px;border:1px solid #ddd;">
-      <div style="font-size:28px;font-weight:bold;color:#1565c0;">{tax_suggested}</div>
-      <div style="font-size:12px;color:#666;margin-top:2px;">→ Tax</div>
-    </div>
-    <div style="text-align:center;padding:10px 20px;background:white;border-radius:4px;border:1px solid #ddd;">
-      <div style="font-size:28px;font-weight:bold;color:#6a1b9a;">{condo_suggested}</div>
-      <div style="font-size:12px;color:#666;margin-top:2px;">→ Condo</div>
-    </div>
-    <div style="text-align:center;padding:10px 20px;background:white;border-radius:4px;border:1px solid #ddd;">
-      <div style="font-size:28px;font-weight:bold;color:#2e7d32;">{mortgage_suggested}</div>
-      <div style="font-size:12px;color:#666;margin-top:2px;">→ Mortgage</div>
-    </div>
-  </div>
+    <!-- Header -->
+    <tr>
+      <td style="background:#1a237e;color:#ffffff;padding:20px 24px;border-radius:6px 6px 0 0;">
+        <h2 style="margin:0;font-size:20px;font-family:Arial,sans-serif;color:#ffffff;">NJ Foreclosure Categorization Audit</h2>
+        <p style="margin:6px 0 0;font-size:14px;font-family:Arial,sans-serif;color:#cccccc;">{filename} &nbsp;|&nbsp; {today}</p>
+      </td>
+    </tr>
 
-  {review_btn_html}
+    <!-- Stats bar -->
+    <tr>
+      <td style="background:#f5f5f5;padding:16px 24px;border-left:1px solid #dddddd;border-right:1px solid #dddddd;">
+        <table cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            {stat_cell(total, "Rows Reviewed", "#1a237e")}
+            {stat_cell(len(flagged), "Total Flagged", "#d32f2f")}
+            {stat_cell(uncategorized, "Uncategorized", "#f57c00")}
+            {stat_cell(mismatched, "Mismatched", "#d32f2f")}
+            {stat_cell(tax_suggested, "&#8594;&nbsp;Tax", "#1565c0")}
+            {stat_cell(condo_suggested, "&#8594;&nbsp;Condo", "#6a1b9a")}
+            {stat_cell(mortgage_suggested, "&#8594;&nbsp;Mortgage", "#2e7d32")}
+          </tr>
+        </table>
+      </td>
+    </tr>
 
-  <table style="width:100%;border-collapse:collapse;margin-top:0;border:1px solid #ddd;font-size:13px;">
-    <thead>
-      <tr style="background:#e8eaf6;">
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Row</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Docket</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Plaintiff</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Attorney</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Current Type</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Suggested</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Reason</th>
-        <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;">Issue</th>
-      </tr>
-    </thead>
-    <tbody>{rows_html}</tbody>
+    <!-- Review button row -->
+    <tr>
+      <td style="padding:0 24px;border-left:1px solid #dddddd;border-right:1px solid #dddddd;">
+        {review_btn_html}
+      </td>
+    </tr>
+
+    <!-- Flagged rows table -->
+    <tr>
+      <td style="padding:0 0 4px 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" border="0"
+               style="border-collapse:collapse;font-size:13px;border:1px solid #dddddd;">
+          <thead>
+            <tr style="background:#e8eaf6;">
+              <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;font-family:Arial,sans-serif;">Row</th>
+              <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;font-family:Arial,sans-serif;">Docket</th>
+              <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;font-family:Arial,sans-serif;">Plaintiff</th>
+              <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;font-family:Arial,sans-serif;">Attorney</th>
+              <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;font-family:Arial,sans-serif;">Current Type</th>
+              <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;font-family:Arial,sans-serif;">Suggested</th>
+              <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;font-family:Arial,sans-serif;">Reason</th>
+              <th style="padding:10px 8px;text-align:left;border-bottom:2px solid #9fa8da;font-family:Arial,sans-serif;">Issue</th>
+            </tr>
+          </thead>
+          <tbody>{rows_html}</tbody>
+        </table>
+      </td>
+    </tr>
+
+    <!-- Footer -->
+    <tr>
+      <td style="padding:12px 0 16px 0;">
+        <p style="margin:0;font-size:12px;color:#999999;font-family:Arial,sans-serif;">
+          Generated by NJ Foreclosure Audit skill &nbsp;|&nbsp; Lighthouse Community Services &nbsp;|&nbsp; {today}
+        </p>
+      </td>
+    </tr>
+
   </table>
 
-  <p style="margin-top:16px;font-size:12px;color:#999;">
-    Generated by NJ Foreclosure Audit skill &nbsp;|&nbsp; Lighthouse Community Services &nbsp;|&nbsp; {today}
-  </p>
 </body>
 </html>"""
 
