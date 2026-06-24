@@ -4,6 +4,10 @@
 __pycache__/
 *.pyc
 
+# Gmail API secrets (never commit)
+.env
+client_secret.json
+
 # Machine-specific (do not commit)
 claude_path.txt
 auto_runner.log

@@ -92,10 +92,18 @@ python3 .claude/skills/nj-foreclosure-audit/scripts/build_email.py \
 
 ### Step 5 — Send the report
 
-Using the **Gmail** connector, send:
-- **To:** Jerry@westmarq.com
-- **Subject:** `NJ Foreclosure Audit — <filename> — <today's date>`
-- **Body:** the HTML from Step 4
+Use `send_email.py` to send directly via Gmail API (no drafts):
+
+```bash
+python send_email.py \
+  --to Jerry@westmarq.com \
+  --subject "NJ Foreclosure Audit — <filename> — <today's date>" \
+  --html /tmp/nj_email.html
+```
+
+Prerequisites: `.env` must contain `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`,
+`GMAIL_REFRESH_TOKEN`. Run `python gmail_auth_setup.py` once to create it.
+See `SETUPGMAILSEND.md` for the full one-time setup.
 
 ### Step 6 — Log and finish
 
