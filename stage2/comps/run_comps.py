@@ -187,6 +187,31 @@ def redfin_comps(address: str, cfg: dict, notes: list) -> list[Comp]:
 # --------------------------------------------------------------------------
 # mock provider (renders with no keys)
 # --------------------------------------------------------------------------
+def researched_comps(path: Path, notes: list) -> list[Comp]:
+    """Load comps from a JSON file of researched/verified sales.
+
+    This is the compliant path: comps gathered by search or from your agent /
+    MLS and recorded in a file, rather than scraped. Same schema as Comp.
+    """
+    data = json.loads(path.read_text(encoding="utf-8"))
+    entries = data.get("comps", data) if isinstance(data, dict) else data
+    for n in (data.get("notes", []) if isinstance(data, dict) else []):
+        notes.append(n)
+    out = []
+    for r in entries:
+        out.append(Comp(
+            source=r.get("source", "Research"), address=r.get("address", ""),
+            sold_price=float(r.get("sold_price", 0)),
+            sold_date=str(r.get("sold_date", "")),
+            beds=r.get("beds", 0) or 0, baths=r.get("baths", 0) or 0,
+            sqft=int(r.get("sqft", 0) or 0),
+            year_built=int(r.get("year_built", 0) or 0),
+            distance_mi=float(r.get("distance_mi", 0) or 0),
+            url=r.get("url", ""), renovated=bool(r.get("renovated", False)),
+            description=r.get("description", "")))
+    return out
+
+
 def mock_comps(address: str, cfg: dict, notes: list) -> list[Comp]:
     notes.append("MOCK DATA — illustrative comps only (no live sources).")
     base = [
@@ -295,6 +320,13 @@ def main(argv=None):
     ap.add_argument("--subject-sqft", type=int, default=0)
     ap.add_argument("--property-name", default="")
     ap.add_argument("--mock", action="store_true")
+    ap.add_argument("--comps-file",
+                    help="JSON file of researched comps (compliant path)")
+    ap.add_argument("--suggested", type=float, default=0,
+                    help="Override the suggested price with a concluded ARV")
+    ap.add_argument("--arv-low", type=float, default=0)
+    ap.add_argument("--arv-high", type=float, default=0)
+    ap.add_argument("--basis-note", default="")
     args = ap.parse_args(argv)
 
     cfg = load_config(Path(args.config))
@@ -305,7 +337,9 @@ def main(argv=None):
     if args.summary and Path(args.summary).exists():
         summary = json.loads(Path(args.summary).read_text(encoding="utf-8"))
 
-    if args.mock:
+    if args.comps_file:
+        comps = researched_comps(Path(args.comps_file), notes)
+    elif args.mock:
         comps = mock_comps(args.address, cfg, notes)
     else:
         comps = zillow_comps(args.address, cfg, notes) + \
@@ -317,9 +351,15 @@ def main(argv=None):
               "\n  ".join(notes))
         return 2
 
-    chosen = select_comps(comps, cfg)
+    chosen = comps if args.comps_file else select_comps(comps, cfg)
     fetch_photos(chosen, cfg, out_dir / ".photos", notes)
     pricing = suggest_price(chosen, args.subject_sqft, cfg)
+    if args.suggested:
+        pricing = {"suggested": args.suggested,
+                   "low": args.arv_low or pricing.get("low"),
+                   "high": args.arv_high or pricing.get("high"),
+                   "median_ppsf": pricing.get("median_ppsf"),
+                   "basis_note": args.basis_note or pricing.get("basis_note", "")}
     economics = profit_at(pricing.get("suggested", 0), summary, cfg)
 
     import render_comps as renderer

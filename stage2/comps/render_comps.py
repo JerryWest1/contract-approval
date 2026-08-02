@@ -67,8 +67,16 @@ def render(path, name, address, comps, pricing, economics, notes):
     c.setFillColor(HexColor("#CBD5E1"))
     c.setFont("Helvetica", 8)
     rng = f"Range {usd(pricing.get('low'))} – {usd(pricing.get('high'))}"
-    c.drawString(MARGIN + 16, y - 0.84 * inch,
-                 f"{rng}   ·   {pricing.get('basis_note', '')}")
+    note_txt = f"{rng}   ·   {pricing.get('basis_note', '')}"
+    # keep clear of the right-hand economics block
+    avail = PAGE_W - 2 * MARGIN - 32 - (2.35 * inch if economics else 0)
+    while (c.stringWidth(note_txt, "Helvetica", 8) > avail
+           and len(note_txt) > 12):
+        note_txt = note_txt[:-2]
+        if c.stringWidth(note_txt + "…", "Helvetica", 8) <= avail:
+            note_txt += "…"
+            break
+    c.drawString(MARGIN + 16, y - 0.84 * inch, note_txt)
 
     # profit vs all-in (right half of callout)
     if economics:
